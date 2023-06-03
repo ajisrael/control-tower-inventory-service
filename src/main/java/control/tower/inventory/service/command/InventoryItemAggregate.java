@@ -1,6 +1,7 @@
 package control.tower.inventory.service.command;
 
 import control.tower.inventory.service.core.events.InventoryItemCreatedEvent;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventhandling.EventHandler;
@@ -10,6 +11,7 @@ import org.axonframework.spring.stereotype.Aggregate;
 
 @Aggregate
 @NoArgsConstructor
+@Getter
 public class InventoryItemAggregate {
 
     @AggregateIdentifier
