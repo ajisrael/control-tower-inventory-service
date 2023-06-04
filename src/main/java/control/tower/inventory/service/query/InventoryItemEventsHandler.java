@@ -4,12 +4,14 @@ import control.tower.inventory.service.core.data.InventoryItemEntity;
 import control.tower.inventory.service.core.data.InventoryItemRepository;
 import control.tower.inventory.service.core.events.InventoryItemCreatedEvent;
 import lombok.AllArgsConstructor;
+import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
+@ProcessingGroup("inventory-item-group")
 public class InventoryItemEventsHandler {
 
     private final InventoryItemRepository inventoryItemRepository;
