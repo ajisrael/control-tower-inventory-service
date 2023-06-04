@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.UUID;
 
 @RestController
@@ -18,7 +19,7 @@ public class InventoryItemsCommandController {
     private CommandGateway commandGateway;
 
     @PostMapping
-    public String createInventoryItem(@RequestBody CreateInventoryItemRestModel createInventoryItemRestModel) {
+    public String createInventoryItem(@Valid @RequestBody CreateInventoryItemRestModel createInventoryItemRestModel) {
         CreateInventoryItemCommand createInventoryItemCommand = CreateInventoryItemCommand.builder()
                 .sku(UUID.randomUUID().toString())
                 .productId(createInventoryItemRestModel.getProductId())
