@@ -3,7 +3,6 @@ package control.tower.inventory.service.command.rest;
 import control.tower.inventory.service.command.CreateInventoryItemCommand;
 import lombok.AllArgsConstructor;
 import org.axonframework.commandhandling.gateway.CommandGateway;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +13,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/inventory")
 @AllArgsConstructor
-public class InventoryItemsController {
 public class InventoryItemsCommandController {
 
     private CommandGateway commandGateway;
@@ -38,18 +36,6 @@ public class InventoryItemsCommandController {
 
         return returnValue;
     }
-
-    @GetMapping
-    public String getInventoryItem() {
-        return "HTTP GET Handled " + environment.getProperty("local.server.port");
-    }
-
-    @PutMapping
-    public String updateInventoryItem() {
-        return "HTTP PUT Handled";
-    }
-
-    @DeleteMapping
 }
 
 
