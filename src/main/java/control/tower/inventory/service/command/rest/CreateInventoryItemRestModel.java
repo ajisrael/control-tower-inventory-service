@@ -1,4 +1,4 @@
-package control.tower.inventory.service.rest;
+package control.tower.inventory.service.command.rest;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
