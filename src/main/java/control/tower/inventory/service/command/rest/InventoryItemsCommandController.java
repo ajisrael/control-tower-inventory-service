@@ -27,15 +27,7 @@ public class InventoryItemsCommandController {
                 .binId(createInventoryItemRestModel.getBinId())
                 .build();
 
-        String returnValue;
-
-        try {
-            returnValue = commandGateway.sendAndWait(createInventoryItemCommand);
-        } catch (Exception exception) {
-            returnValue = exception.getLocalizedMessage();
-        }
-
-        return returnValue;
+        return commandGateway.sendAndWait(createInventoryItemCommand);
     }
 }
 
