@@ -3,7 +3,6 @@ package control.tower.inventory.service.command.interceptors;
 import control.tower.inventory.service.command.CreateInventoryItemCommand;
 import control.tower.inventory.service.core.data.InventoryItemLookupEntity;
 import control.tower.inventory.service.core.data.InventoryItemLookupRepository;
-import lombok.RequiredArgsConstructor;
 import org.axonframework.commandhandling.CommandMessage;
 import org.axonframework.messaging.MessageDispatchInterceptor;
 import org.slf4j.Logger;
@@ -12,8 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.function.BiFunction;
-
-import static control.tower.inventory.service.core.utils.Helper.isNullOrBlank;
 
 @Component
 public class CreateInventoryItemCommandInterceptor implements MessageDispatchInterceptor<CommandMessage<?>> {
