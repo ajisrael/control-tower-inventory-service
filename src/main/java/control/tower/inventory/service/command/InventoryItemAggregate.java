@@ -9,6 +9,8 @@ import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateLifecycle;
 import org.axonframework.spring.stereotype.Aggregate;
 
+import static control.tower.inventory.service.core.utils.Helper.isNullOrBlank;
+
 @Aggregate
 @NoArgsConstructor
 @Getter
@@ -60,7 +62,5 @@ public class InventoryItemAggregate {
         }
     }
 
-    private boolean isNullOrBlank(String string) {
-        return string == null || string.isBlank();
-    }
+
 }
