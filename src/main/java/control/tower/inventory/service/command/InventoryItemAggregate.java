@@ -49,10 +49,6 @@ public class InventoryItemAggregate {
             throw new IllegalArgumentException("SKU cannot be empty");
         }
 
-        if (isNullOrBlank(command.getProductId())) {
-            throw new IllegalArgumentException("ProductId cannot be empty");
-        }
-
         if (isNullOrBlank(command.getLocationId())) {
             throw new IllegalArgumentException("LocationId cannot be empty");
         }
