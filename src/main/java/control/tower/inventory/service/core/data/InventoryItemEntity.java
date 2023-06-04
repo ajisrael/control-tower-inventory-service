@@ -10,7 +10,7 @@ import java.io.Serializable;
 
 @Data
 @Entity
-@Table(name="inventory")
+@Table(name="inventoryitem")
 public class InventoryItemEntity implements Serializable {
 
     private static final long serialVersionUID = 789654123987456321L;
