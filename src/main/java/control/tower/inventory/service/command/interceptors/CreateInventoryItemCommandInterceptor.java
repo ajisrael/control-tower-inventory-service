@@ -1,6 +1,9 @@
 package control.tower.inventory.service.command.interceptors;
 
 import control.tower.inventory.service.command.CreateInventoryItemCommand;
+import control.tower.inventory.service.core.data.InventoryItemLookupEntity;
+import control.tower.inventory.service.core.data.InventoryItemLookupRepository;
+import lombok.RequiredArgsConstructor;
 import org.axonframework.commandhandling.CommandMessage;
 import org.axonframework.messaging.MessageDispatchInterceptor;
 import org.slf4j.Logger;
@@ -17,6 +20,12 @@ public class CreateInventoryItemCommandInterceptor implements MessageDispatchInt
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CreateInventoryItemCommandInterceptor.class);
 
+    private final InventoryItemLookupRepository inventoryItemLookupRepository;
+
+    public CreateInventoryItemCommandInterceptor(InventoryItemLookupRepository inventoryItemLookupRepository) {
+        this.inventoryItemLookupRepository = inventoryItemLookupRepository;
+    }
+
     @Override
     public BiFunction<Integer, CommandMessage<?>, CommandMessage<?>> handle(
             List<? extends CommandMessage<?>> messages) {
@@ -28,8 +37,14 @@ public class CreateInventoryItemCommandInterceptor implements MessageDispatchInt
 
                 CreateInventoryItemCommand createInventoryItemCommand = (CreateInventoryItemCommand) command.getPayload();
 
-                if (isNullOrBlank(createInventoryItemCommand.getProductId())) {
-                    throw new IllegalArgumentException("ProductId cannot be empty");
+                InventoryItemLookupEntity inventoryItemLookupEntity = inventoryItemLookupRepository.findBySku(
+                        createInventoryItemCommand.getSku());
+
+                if (inventoryItemLookupEntity != null) {
+                    throw new IllegalStateException(
+                            String.format("Inventory item with sku %s already exists",
+                                    createInventoryItemCommand.getSku())
+                    );
                 }
             }
 
