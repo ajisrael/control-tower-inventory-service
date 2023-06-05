@@ -19,7 +19,7 @@ public class InventoryServiceApplication {
 	}
 
 	@Autowired
-	public void registerCreateProductCommandInterceptor(ApplicationContext context, CommandBus commandBus) {
+	public void registerCreateInventoryItemCommandInterceptor(ApplicationContext context, CommandBus commandBus) {
 		commandBus.registerDispatchInterceptor(
 				context.getBean(CreateInventoryItemCommandInterceptor.class)
 		);
