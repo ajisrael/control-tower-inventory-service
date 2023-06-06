@@ -1,6 +1,6 @@
 package control.tower.inventory.service.command.interceptors;
 
-import control.tower.inventory.service.command.CreateInventoryItemCommand;
+import control.tower.inventory.service.command.commands.CreateInventoryItemCommand;
 import control.tower.inventory.service.core.data.InventoryItemLookupEntity;
 import control.tower.inventory.service.core.data.InventoryItemLookupRepository;
 import org.axonframework.commandhandling.CommandMessage;

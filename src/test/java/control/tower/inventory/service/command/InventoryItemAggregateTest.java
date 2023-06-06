@@ -1,5 +1,6 @@
 package control.tower.inventory.service.command;
 
+import control.tower.inventory.service.command.commands.CreateInventoryItemCommand;
 import control.tower.inventory.service.core.events.InventoryItemCreatedEvent;
 import org.axonframework.test.aggregate.AggregateTestFixture;
 import org.axonframework.test.aggregate.FixtureConfiguration;

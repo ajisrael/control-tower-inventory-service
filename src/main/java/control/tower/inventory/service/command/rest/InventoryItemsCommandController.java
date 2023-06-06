@@ -1,6 +1,6 @@
 package control.tower.inventory.service.command.rest;
 
-import control.tower.inventory.service.command.CreateInventoryItemCommand;
+import control.tower.inventory.service.command.commands.CreateInventoryItemCommand;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
