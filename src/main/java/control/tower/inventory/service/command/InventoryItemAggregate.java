@@ -1,5 +1,6 @@
 package control.tower.inventory.service.command;
 
+import control.tower.inventory.service.command.commands.CreateInventoryItemCommand;
 import control.tower.inventory.service.core.events.InventoryItemCreatedEvent;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,8 +9,6 @@ import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateLifecycle;
 import org.axonframework.spring.stereotype.Aggregate;
-
-import static control.tower.inventory.service.core.utils.Helper.isNullOrBlank;
 
 @Aggregate
 @NoArgsConstructor
@@ -24,7 +23,7 @@ public class InventoryItemAggregate {
 
     @CommandHandler
     public InventoryItemAggregate(CreateInventoryItemCommand command) {
-        validateCreateInventoryItemCommand(command);
+        command.validate();
 
         InventoryItemCreatedEvent event = InventoryItemCreatedEvent.builder()
                 .sku(command.getSku())
@@ -44,23 +43,5 @@ public class InventoryItemAggregate {
         this.binId = event.getBinId();
     }
 
-    private void validateCreateInventoryItemCommand(CreateInventoryItemCommand command) {
-        if (isNullOrBlank(command.getSku())) {
-            throw new IllegalArgumentException("SKU cannot be empty");
-        }
-
-        if (isNullOrBlank(command.getProductId())) {
-            throw new IllegalArgumentException("ProductId cannot be empty");
-        }
-
-        if (isNullOrBlank(command.getLocationId())) {
-            throw new IllegalArgumentException("LocationId cannot be empty");
-        }
-
-        if (isNullOrBlank(command.getBinId())) {
-            throw new IllegalArgumentException("BinId cannot be empty");
-        }
     }
-
-
 }

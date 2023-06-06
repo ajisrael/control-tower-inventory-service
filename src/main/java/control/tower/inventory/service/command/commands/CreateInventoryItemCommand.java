@@ -16,4 +16,21 @@ public class CreateInventoryItemCommand {
     private String locationId;
     private String binId;
 
+    public void validate() {
+        if (isNullOrBlank(sku)) {
+            throw new IllegalArgumentException("SKU cannot be empty");
+        }
+
+        if (isNullOrBlank(productId)) {
+            throw new IllegalArgumentException("ProductId cannot be empty");
+        }
+
+        if (isNullOrBlank(locationId)) {
+            throw new IllegalArgumentException("LocationId cannot be empty");
+        }
+
+        if (isNullOrBlank(binId)) {
+            throw new IllegalArgumentException("BinId cannot be empty");
+        }
+    }
 }
