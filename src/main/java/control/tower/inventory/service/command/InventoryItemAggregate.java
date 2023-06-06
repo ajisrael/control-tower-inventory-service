@@ -1,7 +1,9 @@
 package control.tower.inventory.service.command;
 
 import control.tower.inventory.service.command.commands.CreateInventoryItemCommand;
+import control.tower.inventory.service.command.commands.MoveInventoryItemCommand;
 import control.tower.inventory.service.core.events.InventoryItemCreatedEvent;
+import control.tower.inventory.service.core.events.InventoryItemMovedEvent;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.axonframework.commandhandling.CommandHandler;
@@ -35,6 +37,20 @@ public class InventoryItemAggregate {
         AggregateLifecycle.apply(event);
     }
 
+    @CommandHandler
+    public void handle(MoveInventoryItemCommand command) {
+        command.validate();
+
+        InventoryItemMovedEvent event = InventoryItemMovedEvent.builder()
+                .sku(command.getSku())
+                .productId(command.getProductId())
+                .locationId(command.getLocationId())
+                .binId(command.getBinId())
+                .build();
+
+        AggregateLifecycle.apply(event);
+    }
+
     @EventHandler
     public void on(InventoryItemCreatedEvent event) {
         this.sku = event.getSku();
@@ -43,5 +59,9 @@ public class InventoryItemAggregate {
         this.binId = event.getBinId();
     }
 
+    @EventHandler
+    public void on(InventoryItemMovedEvent event) {
+        this.locationId = event.getLocationId();
+        this.binId = event.getBinId();
     }
 }

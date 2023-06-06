@@ -3,6 +3,7 @@ package control.tower.inventory.service.query;
 import control.tower.inventory.service.core.data.InventoryItemEntity;
 import control.tower.inventory.service.core.data.InventoryItemRepository;
 import control.tower.inventory.service.core.events.InventoryItemCreatedEvent;
+import control.tower.inventory.service.core.events.InventoryItemMovedEvent;
 import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.messaging.interceptors.ExceptionHandler;
@@ -37,6 +38,20 @@ public class InventoryItemEventsHandler {
     public void on(InventoryItemCreatedEvent event) {
         InventoryItemEntity inventoryItemEntity = new InventoryItemEntity();
         BeanUtils.copyProperties(event, inventoryItemEntity);
+        inventoryItemRepository.save(inventoryItemEntity);
+    }
+
+    @EventHandler
+    public void on(InventoryItemMovedEvent event) {
+        InventoryItemEntity inventoryItemEntity = inventoryItemRepository.findBySku(event.getSku());
+
+        if (inventoryItemEntity == null) {
+            throw new IllegalStateException(String.format("Inventory item [%s} does not exist.", event.getSku()));
+        }
+
+        inventoryItemEntity.setLocationId(event.getLocationId());
+        inventoryItemEntity.setBinId(event.getBinId());
+
         inventoryItemRepository.save(inventoryItemEntity);
     }
 }
