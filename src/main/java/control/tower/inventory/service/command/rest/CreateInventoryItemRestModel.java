@@ -1,12 +1,12 @@
 package control.tower.inventory.service.command.rest;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 
 @Getter
-@AllArgsConstructor
+@NoArgsConstructor
 public class CreateInventoryItemRestModel {
 
     @NotBlank(message = "ProductId is a required field")
