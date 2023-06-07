@@ -1,6 +1,6 @@
 package control.tower.inventory.service.saga;
 
-import control.tower.core.commands.IncreaseProductStockWithNewInventoryCommand;
+import control.tower.core.commands.IncreaseProductStockForNewInventoryCommand;
 import control.tower.inventory.service.core.events.InventoryItemCreatedEvent;
 import control.tower.inventory.service.command.commands.RemoveInventoryItemCommand;
 import org.axonframework.commandhandling.CommandCallback;
@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.annotation.Nonnull;
 
 @Saga
-public class InventoryItemSaga {
+public class CreateInventoryItemSaga {
 
     @Autowired
     private transient CommandGateway commandGateway;
@@ -27,26 +27,26 @@ public class InventoryItemSaga {
     @Autowired
     private transient QueryGateway queryGateway;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(InventoryItemSaga.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CreateInventoryItemSaga.class);
 
     @StartSaga
     @EndSaga
     @SagaEventHandler(associationProperty = "sku")
-    public void handle(InventoryItemCreatedEvent event) {
-        LOGGER.info(String.format("Processing InventoryItemCreatedEvent for sku: [%s]", event.getSku()));
+    public void handle(InventoryItemCreatedEvent inventoryItemCreatedEvent) {
+        LOGGER.info(String.format("Processing InventoryItemCreatedEvent for sku: [%s]", inventoryItemCreatedEvent.getSku()));
 
-        IncreaseProductStockWithNewInventoryCommand increaseProductStockWithNewInventoryCommand = IncreaseProductStockWithNewInventoryCommand.builder()
-                .productId(event.getProductId())
-                .sku(event.getSku())
+        IncreaseProductStockForNewInventoryCommand increaseProductStockForNewInventoryCommand = IncreaseProductStockForNewInventoryCommand.builder()
+                .productId(inventoryItemCreatedEvent.getProductId())
+                .sku(inventoryItemCreatedEvent.getSku())
                 .build();
 
-        commandGateway.send(increaseProductStockWithNewInventoryCommand, new CommandCallback<IncreaseProductStockWithNewInventoryCommand, Object>() {
+        commandGateway.send(increaseProductStockForNewInventoryCommand, new CommandCallback<IncreaseProductStockForNewInventoryCommand, Object>() {
             @Override
-            public void onResult(@Nonnull CommandMessage<? extends IncreaseProductStockWithNewInventoryCommand> commandMessage,
+            public void onResult(@Nonnull CommandMessage<? extends IncreaseProductStockForNewInventoryCommand> commandMessage,
                                  @Nonnull CommandResultMessage<?> commandResultMessage) {
                 if (commandResultMessage.isExceptional()) {
                     RemoveInventoryItemCommand removeInventoryItemCommand = RemoveInventoryItemCommand.builder()
-                            .sku(event.getSku())
+                            .sku(inventoryItemCreatedEvent.getSku())
                             .build();
 
                     commandGateway.send(removeInventoryItemCommand);
