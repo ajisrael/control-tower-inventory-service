@@ -4,6 +4,7 @@ import control.tower.inventory.service.core.data.InventoryItemEntity;
 import control.tower.inventory.service.core.data.InventoryItemRepository;
 import control.tower.inventory.service.core.events.InventoryItemCreatedEvent;
 import control.tower.inventory.service.core.events.InventoryItemMovedEvent;
+import control.tower.inventory.service.core.events.InventoryItemRemovedEvent;
 import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.messaging.interceptors.ExceptionHandler;
@@ -53,5 +54,14 @@ public class InventoryItemEventsHandler {
         inventoryItemEntity.setBinId(event.getBinId());
 
         inventoryItemRepository.save(inventoryItemEntity);
+    }
+
+    @EventHandler
+    public void on(InventoryItemRemovedEvent event) {
+        InventoryItemEntity inventoryItemEntity = inventoryItemRepository.findBySku(event.getSku());
+
+        throwErrorIfInventoryItemDoesNotExist(inventoryItemEntity, event.getSku());
+
+        inventoryItemRepository.delete(inventoryItemEntity);
     }
 }
