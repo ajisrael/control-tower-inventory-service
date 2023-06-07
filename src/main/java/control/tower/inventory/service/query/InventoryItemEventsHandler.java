@@ -46,9 +46,7 @@ public class InventoryItemEventsHandler {
     public void on(InventoryItemMovedEvent event) {
         InventoryItemEntity inventoryItemEntity = inventoryItemRepository.findBySku(event.getSku());
 
-        if (inventoryItemEntity == null) {
-            throw new IllegalStateException(String.format("Inventory item [%s} does not exist.", event.getSku()));
-        }
+        throwErrorIfInventoryItemDoesNotExist(inventoryItemEntity, event.getSku());
 
         inventoryItemEntity.setLocationId(event.getLocationId());
         inventoryItemEntity.setBinId(event.getBinId());
@@ -63,5 +61,11 @@ public class InventoryItemEventsHandler {
         throwErrorIfInventoryItemDoesNotExist(inventoryItemEntity, event.getSku());
 
         inventoryItemRepository.delete(inventoryItemEntity);
+    }
+
+    private void throwErrorIfInventoryItemDoesNotExist(InventoryItemEntity inventoryItemEntity, String sku) {
+        if (inventoryItemEntity == null) {
+            throw new IllegalStateException(String.format("Inventory item [%s] does not exist.", sku));
+        }
     }
 }
