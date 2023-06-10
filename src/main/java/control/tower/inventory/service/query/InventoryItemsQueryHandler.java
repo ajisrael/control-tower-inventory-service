@@ -10,8 +10,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static control.tower.core.utils.Helper.throwErrorIfEntityDoesNotExist;
-
 @Component
 @AllArgsConstructor
 public class InventoryItemsQueryHandler {
@@ -25,10 +23,7 @@ public class InventoryItemsQueryHandler {
 
     @QueryHandler
     public  InventoryItemEntity findInventoryItem(FindInventoryItemQuery query) {
-        InventoryItemEntity inventoryItemEntity = inventoryItemRepository.findBySku(query.getSku());
-
-        throwErrorIfEntityDoesNotExist(inventoryItemEntity, String.format("Inventory item %s does not exist", query.getSku()));
-
-        return inventoryItemEntity;
+        return inventoryItemRepository.findById(query.getSku()).orElseThrow(
+                () -> new IllegalStateException(String.format("Inventory item %s does not exist", query.getSku())));
     }
 }
