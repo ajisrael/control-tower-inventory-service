@@ -12,6 +12,10 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.function.BiFunction;
 
+import static control.tower.core.constants.LogMessages.INTERCEPTED_COMMAND;
+import static control.tower.core.utils.Helper.throwExceptionIfEntityDoesExist;
+import static control.tower.inventory.service.core.constants.ExceptionMessages.INVENTORY_ITEM_WITH_ID_DOES_NOT_EXIST;
+
 @Component
 public class CreateInventoryItemCommandInterceptor implements MessageDispatchInterceptor<CommandMessage<?>> {
 
@@ -28,21 +32,17 @@ public class CreateInventoryItemCommandInterceptor implements MessageDispatchInt
             List<? extends CommandMessage<?>> messages) {
         return (index, command) -> {
 
-            LOGGER.info("Intercepted command: " + command.getPayloadType());
 
             if (CreateInventoryItemCommand.class.equals(command.getPayloadType())) {
+                LOGGER.info(String.format(INTERCEPTED_COMMAND, command.getPayloadType()));
 
                 CreateInventoryItemCommand createInventoryItemCommand = (CreateInventoryItemCommand) command.getPayload();
 
                 InventoryItemLookupEntity inventoryItemLookupEntity = inventoryItemLookupRepository.findBySku(
                         createInventoryItemCommand.getSku());
 
-                if (inventoryItemLookupEntity != null) {
-                    throw new IllegalStateException(
-                            String.format("Inventory item with sku %s already exists",
-                                    createInventoryItemCommand.getSku())
-                    );
-                }
+                throwExceptionIfEntityDoesExist(inventoryItemLookupEntity,
+                        String.format(INVENTORY_ITEM_WITH_ID_DOES_NOT_EXIST, createInventoryItemCommand.getSku()));
             }
 
             return command;

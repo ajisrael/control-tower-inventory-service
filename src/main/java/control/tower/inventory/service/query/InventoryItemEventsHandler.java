@@ -13,6 +13,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
+import static control.tower.core.utils.Helper.throwExceptionIfEntityDoesNotExist;
+import static control.tower.inventory.service.core.constants.ExceptionMessages.INVENTORY_ITEM_WITH_ID_DOES_NOT_EXIST;
+
 @Component
 @ProcessingGroup("inventory-item-group")
 public class InventoryItemEventsHandler {
@@ -46,7 +49,7 @@ public class InventoryItemEventsHandler {
     public void on(InventoryItemMovedEvent event) {
         InventoryItemEntity inventoryItemEntity = inventoryItemRepository.findBySku(event.getSku());
 
-        throwErrorIfInventoryItemDoesNotExist(inventoryItemEntity, event.getSku());
+        throwExceptionIfEntityDoesNotExist(inventoryItemEntity, String.format(INVENTORY_ITEM_WITH_ID_DOES_NOT_EXIST, event.getSku()));
 
         inventoryItemEntity.setLocationId(event.getLocationId());
         inventoryItemEntity.setBinId(event.getBinId());
@@ -57,15 +60,7 @@ public class InventoryItemEventsHandler {
     @EventHandler
     public void on(InventoryItemRemovedEvent event) {
         InventoryItemEntity inventoryItemEntity = inventoryItemRepository.findBySku(event.getSku());
-
-        throwErrorIfInventoryItemDoesNotExist(inventoryItemEntity, event.getSku());
-
+        throwExceptionIfEntityDoesNotExist(inventoryItemEntity, String.format(INVENTORY_ITEM_WITH_ID_DOES_NOT_EXIST, event.getSku()));
         inventoryItemRepository.delete(inventoryItemEntity);
-    }
-
-    private void throwErrorIfInventoryItemDoesNotExist(InventoryItemEntity inventoryItemEntity, String sku) {
-        if (inventoryItemEntity == null) {
-            throw new IllegalStateException(String.format("Inventory item [%s] does not exist.", sku));
-        }
     }
 }

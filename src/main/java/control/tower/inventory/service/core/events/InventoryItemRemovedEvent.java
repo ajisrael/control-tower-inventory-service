@@ -9,4 +9,5 @@ public class InventoryItemRemovedEvent {
 
     private String sku;
     private String productId;
+    private boolean isCompensatingTransaction = false;
 }

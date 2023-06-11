@@ -1,12 +1,7 @@
 package control.tower.inventory.service.saga;
 
 import control.tower.core.commands.DecreaseProductStockForRemovedInventoryCommand;
-import control.tower.core.commands.IncreaseProductStockForNewInventoryCommand;
-import control.tower.inventory.service.command.commands.RemoveInventoryItemCommand;
 import control.tower.inventory.service.core.events.InventoryItemRemovedEvent;
-import org.axonframework.commandhandling.CommandCallback;
-import org.axonframework.commandhandling.CommandMessage;
-import org.axonframework.commandhandling.CommandResultMessage;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.modelling.saga.EndSaga;
 import org.axonframework.modelling.saga.SagaEventHandler;
@@ -16,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.annotation.Nonnull;
+import static control.tower.inventory.service.core.constants.LogMessages.*;
 
 @Saga
 public class RemoveInventoryItemSaga {
@@ -30,19 +25,27 @@ public class RemoveInventoryItemSaga {
     @EndSaga
     @SagaEventHandler(associationProperty = "sku")
     public void on(InventoryItemRemovedEvent inventoryItemRemovedEvent) {
-        DecreaseProductStockForRemovedInventoryCommand decreaseProductStockForRemovedInventoryCommand = DecreaseProductStockForRemovedInventoryCommand.builder()
-                .productId(inventoryItemRemovedEvent.getProductId())
-                .sku(inventoryItemRemovedEvent.getSku())
-                .build();
+        LOGGER.info(String.format(PROCESSING_INVENTORY_ITEM_REMOVED_EVENT_FOR_SKU, inventoryItemRemovedEvent.getSku()));
 
-        commandGateway.send(decreaseProductStockForRemovedInventoryCommand, new CommandCallback<DecreaseProductStockForRemovedInventoryCommand, Object>() {
-            @Override
-            public void onResult(@Nonnull CommandMessage<? extends DecreaseProductStockForRemovedInventoryCommand> commandMessage,
-                                 @Nonnull CommandResultMessage<?> commandResultMessage) {
+        if (inventoryItemRemovedEvent.isCompensatingTransaction()) {
+            LOGGER.info(NOT_DECREMENTING_FROM_PRODUCT_STOCK_DUE_TO_COMPENSATING_TRANSACTION_FROM_EXCEPTION);
+        } else {
+            LOGGER.info(String.format(ISSUING_DECREASE_PRODUCT_STOCK_FOR_REMOVE_INVENTORY_ITEM_COMMAND, inventoryItemRemovedEvent.getProductId()));
+
+            DecreaseProductStockForRemovedInventoryCommand decreaseProductStockForRemovedInventoryCommand = DecreaseProductStockForRemovedInventoryCommand.builder()
+                    .productId(inventoryItemRemovedEvent.getProductId())
+                    .sku(inventoryItemRemovedEvent.getSku())
+                    .build();
+
+            commandGateway.send(decreaseProductStockForRemovedInventoryCommand, (commandMessage, commandResultMessage) -> {
                 if (commandResultMessage.isExceptional()) {
-                    LOGGER.error("Failed to decrement stock level for product " + inventoryItemRemovedEvent.getProductId());
+                    LOGGER.error(String.format(EXCEPTION_ENCOUNTERED_WHEN_ISSUING_DECREASE_PRODUCT_STOCK_FOR_REMOVED_INVENTORY_ITEM_COMMAND,
+                            commandResultMessage.exceptionResult().getLocalizedMessage()));
+
+                    LOGGER.info(String.format(SENDING_NOTIFICATION_TO_DECREASE_STOCK_LEVEL_BY_1_FOR_PRODUCT_ID,
+                            inventoryItemRemovedEvent.getProductId()));
                 }
-            }
-        });
+            });
+        }
     }
 }

@@ -9,7 +9,7 @@ import control.tower.inventory.service.core.events.InventoryItemRemovedEvent;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.axonframework.commandhandling.CommandHandler;
-import org.axonframework.eventhandling.EventHandler;
+import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateLifecycle;
 import org.axonframework.spring.stereotype.Aggregate;
@@ -60,12 +60,13 @@ public class InventoryItemAggregate {
         InventoryItemRemovedEvent event = InventoryItemRemovedEvent.builder()
                 .sku(command.getSku())
                 .productId(productId)
+                .isCompensatingTransaction(command.isCompensatingTransaction())
                 .build();
 
         AggregateLifecycle.apply(event);
     }
 
-    @EventHandler
+    @EventSourcingHandler
     public void on(InventoryItemCreatedEvent event) {
         this.sku = event.getSku();
         this.productId = event.getProductId();
@@ -73,13 +74,13 @@ public class InventoryItemAggregate {
         this.binId = event.getBinId();
     }
 
-    @EventHandler
+    @EventSourcingHandler
     public void on(InventoryItemMovedEvent event) {
         this.locationId = event.getLocationId();
         this.binId = event.getBinId();
     }
 
-    @EventHandler
+    @EventSourcingHandler
     public void on(InventoryItemRemovedEvent event) {
         AggregateLifecycle.markDeleted();
     }

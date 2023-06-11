@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static control.tower.inventory.service.core.constants.ExceptionMessages.INVENTORY_ITEM_WITH_ID_DOES_NOT_EXIST;
+
 @Component
 @AllArgsConstructor
 public class InventoryItemsQueryHandler {
@@ -24,6 +26,6 @@ public class InventoryItemsQueryHandler {
     @QueryHandler
     public  InventoryItemEntity findInventoryItem(FindInventoryItemQuery query) {
         return inventoryItemRepository.findById(query.getSku()).orElseThrow(
-                () -> new IllegalStateException(String.format("Inventory item %s does not exist", query.getSku())));
+                () -> new IllegalStateException(String.format(INVENTORY_ITEM_WITH_ID_DOES_NOT_EXIST, query.getSku())));
     }
 }

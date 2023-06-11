@@ -4,7 +4,11 @@ import lombok.Builder;
 import lombok.Getter;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
-import static control.tower.core.utils.Helper.isNullOrBlank;
+import static control.tower.core.utils.Helper.throwExceptionIfParameterIsEmpty;
+import static control.tower.inventory.service.core.constants.ExceptionMessages.SKU_CANNOT_BE_EMPTY;
+import static control.tower.inventory.service.core.constants.ExceptionMessages.PRODUCT_ID_CANNOT_BE_EMPTY;
+import static control.tower.inventory.service.core.constants.ExceptionMessages.LOCATION_ID_CANNOT_BE_EMPTY;
+import static control.tower.inventory.service.core.constants.ExceptionMessages.BIN_ID_CANNOT_BE_EMPTY;
 
 @Getter
 @Builder
@@ -17,20 +21,9 @@ public class MoveInventoryItemCommand {
     private String binId;
 
     public void validate() {
-        if (isNullOrBlank(sku)) {
-            throw new IllegalArgumentException("SKU cannot be empty");
-        }
-
-        if (isNullOrBlank(productId)) {
-            throw new IllegalArgumentException("ProductId cannot be empty");
-        }
-
-        if (isNullOrBlank(locationId)) {
-            throw new IllegalArgumentException("LocationId cannot be empty");
-        }
-
-        if (isNullOrBlank(binId)) {
-            throw new IllegalArgumentException("BinId cannot be empty");
-        }
+        throwExceptionIfParameterIsEmpty(this.getSku(), SKU_CANNOT_BE_EMPTY);
+        throwExceptionIfParameterIsEmpty(this.getSku(), PRODUCT_ID_CANNOT_BE_EMPTY);
+        throwExceptionIfParameterIsEmpty(this.getSku(), LOCATION_ID_CANNOT_BE_EMPTY);
+        throwExceptionIfParameterIsEmpty(this.getSku(), BIN_ID_CANNOT_BE_EMPTY);
     }
 }
