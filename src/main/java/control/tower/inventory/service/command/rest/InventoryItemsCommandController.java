@@ -2,6 +2,8 @@ package control.tower.inventory.service.command.rest;
 
 import control.tower.inventory.service.command.commands.CreateInventoryItemCommand;
 import control.tower.inventory.service.command.commands.RemoveInventoryItemCommand;
+import control.tower.inventory.service.command.rest.models.CreateInventoryItemRestModel;
+import control.tower.inventory.service.command.rest.models.RemoveInventoryItemRestModel;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
