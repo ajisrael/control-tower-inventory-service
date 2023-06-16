@@ -37,6 +37,8 @@ public class CreateInventoryItemCommandInterceptor implements MessageDispatchInt
 
                 CreateInventoryItemCommand createInventoryItemCommand = (CreateInventoryItemCommand) command.getPayload();
 
+                createInventoryItemCommand.validate();
+
                 InventoryItemLookupEntity inventoryItemLookupEntity = inventoryItemLookupRepository.findBySku(
                         createInventoryItemCommand.getSku());
 

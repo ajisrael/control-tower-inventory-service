@@ -27,8 +27,6 @@ public class InventoryItemAggregate {
 
     @CommandHandler
     public InventoryItemAggregate(CreateInventoryItemCommand command) {
-        command.validate();
-
         InventoryItemCreatedEvent event = InventoryItemCreatedEvent.builder()
                 .sku(command.getSku())
                 .productId(command.getProductId())
@@ -41,8 +39,6 @@ public class InventoryItemAggregate {
 
     @CommandHandler
     public void handle(MoveInventoryItemCommand command) {
-        command.validate();
-
         InventoryItemMovedEvent event = InventoryItemMovedEvent.builder()
                 .sku(command.getSku())
                 .productId(productId)
@@ -55,8 +51,6 @@ public class InventoryItemAggregate {
 
     @CommandHandler
     public void handle(RemoveInventoryItemCommand command) {
-        command.validate();
-
         InventoryItemRemovedEvent event = InventoryItemRemovedEvent.builder()
                 .sku(command.getSku())
                 .productId(productId)
