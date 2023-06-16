@@ -45,7 +45,7 @@ public class InventoryItemAggregate {
 
         InventoryItemMovedEvent event = InventoryItemMovedEvent.builder()
                 .sku(command.getSku())
-                .productId(command.getProductId())
+                .productId(productId)
                 .locationId(command.getLocationId())
                 .binId(command.getBinId())
                 .build();
