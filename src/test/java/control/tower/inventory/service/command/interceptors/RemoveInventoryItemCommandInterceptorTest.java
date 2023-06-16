@@ -1,6 +1,6 @@
 package control.tower.inventory.service.command.interceptors;
 
-import control.tower.inventory.service.command.commands.CreateInventoryItemCommand;
+import control.tower.inventory.service.command.commands.RemoveInventoryItemCommand;
 import control.tower.inventory.service.core.data.InventoryItemLookupEntity;
 import control.tower.inventory.service.core.data.InventoryItemLookupRepository;
 import org.axonframework.commandhandling.CommandMessage;
@@ -15,53 +15,48 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-class CreateInventoryItemCommandInterceptorTest {
+class RemoveInventoryItemCommandInterceptorTest {
 
-    private CreateInventoryItemCommandInterceptor interceptor;
+    private RemoveInventoryItemCommandInterceptor interceptor;
     private InventoryItemLookupRepository lookupRepository;
 
     private final String SKU = "123";
-    private final String PRODUCT_ID = "productId";
-    private final String LOCATION_ID = "locationId";
-    private final String BIN_ID = "binId";
 
     @BeforeEach
     void setUp() {
         lookupRepository = mock(InventoryItemLookupRepository.class);
-        interceptor = new CreateInventoryItemCommandInterceptor(lookupRepository);
+        interceptor = new RemoveInventoryItemCommandInterceptor(lookupRepository);
     }
 
     @Test
-    void shouldProcessValidCreateInventoryItemCommand() {
-        CreateInventoryItemCommand validCommand = CreateInventoryItemCommand.builder()
+    void shouldProcessValidRemoveInventoryItemCommand() {
+        RemoveInventoryItemCommand validCommand = RemoveInventoryItemCommand.builder()
                 .sku(SKU)
-                .productId(PRODUCT_ID)
-                .locationId(LOCATION_ID)
-                .binId(BIN_ID)
                 .build();
 
-        CommandMessage<CreateInventoryItemCommand> commandMessage = new GenericCommandMessage<>(validCommand);
+        CommandMessage<RemoveInventoryItemCommand> commandMessage = new GenericCommandMessage<>(validCommand);
+
+        InventoryItemLookupEntity inventoryItemLookupEntity = new InventoryItemLookupEntity(SKU);
+        when(lookupRepository.findBySku(SKU)).thenReturn(inventoryItemLookupEntity);
 
         BiFunction<Integer, CommandMessage<?>, CommandMessage<?>> result = interceptor.handle(List.of(commandMessage));
 
         CommandMessage<?> processedCommand = result.apply(0, commandMessage);
 
         assertEquals(commandMessage, processedCommand);
+
+        verify(lookupRepository).findBySku(SKU);
     }
 
     @Test
-    void shouldThrowExceptionWhenProcessingExistingSku() {
-        CreateInventoryItemCommand duplicateCommand = CreateInventoryItemCommand.builder()
+    void shouldThrowExceptionWhenProcessingNonExistingSku() {
+        RemoveInventoryItemCommand duplicateCommand = RemoveInventoryItemCommand.builder()
                 .sku(SKU)
-                .productId(PRODUCT_ID)
-                .locationId(LOCATION_ID)
-                .binId(BIN_ID)
                 .build();
 
-        CommandMessage<CreateInventoryItemCommand> commandMessage = new GenericCommandMessage<>(duplicateCommand);
+        CommandMessage<RemoveInventoryItemCommand> commandMessage = new GenericCommandMessage<>(duplicateCommand);
 
-        InventoryItemLookupEntity existingEntity = new InventoryItemLookupEntity(SKU);
-        when(lookupRepository.findBySku(SKU)).thenReturn(existingEntity);
+        when(lookupRepository.findBySku(SKU)).thenReturn(null);
 
         BiFunction<Integer, CommandMessage<?>, CommandMessage<?>> result = interceptor.handle(List.of(commandMessage));
 

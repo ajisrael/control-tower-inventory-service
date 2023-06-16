@@ -1,7 +1,11 @@
 package control.tower.inventory.service.command;
 
 import control.tower.inventory.service.command.commands.CreateInventoryItemCommand;
+import control.tower.inventory.service.command.commands.MoveInventoryItemCommand;
+import control.tower.inventory.service.command.commands.RemoveInventoryItemCommand;
 import control.tower.inventory.service.core.events.InventoryItemCreatedEvent;
+import control.tower.inventory.service.core.events.InventoryItemMovedEvent;
+import control.tower.inventory.service.core.events.InventoryItemRemovedEvent;
 import org.axonframework.test.aggregate.AggregateTestFixture;
 import org.axonframework.test.aggregate.FixtureConfiguration;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,12 +13,12 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class InventoryItemAggregateTest {
+class InventoryItemAggregateTest {
 
-    private String SKU = "1234";
-    private String PRODUCT_ID = "5678";
-    private String LOCATION_ID = "WHS";
-    private String BIN_ID = "101";
+    private final String SKU = "1234";
+    private final String PRODUCT_ID = "5678";
+    private final String LOCATION_ID = "WHS";
+    private final String BIN_ID = "101";
 
     private FixtureConfiguration<InventoryItemAggregate> fixture;
 
@@ -51,106 +55,51 @@ public class InventoryItemAggregateTest {
     }
 
     @Test
-    void shouldNotCreateInventoryItemAggregateWhenSkuIsNull() {
-        fixture.givenNoPriorActivity()
-                .when(
-                        CreateInventoryItemCommand.builder()
-                                .sku(null)
-                                .productId(PRODUCT_ID)
-                                .locationId(LOCATION_ID)
-                                .binId(BIN_ID)
-                                .build())
-                .expectException(IllegalArgumentException.class);
+    void shouldMoveInventoryItemAggregate() {
+        String newLocationId = "newLocationId";
+        String newBinId = "newBinId";
+
+        fixture.given(InventoryItemCreatedEvent.builder()
+                        .sku(SKU)
+                        .productId(PRODUCT_ID)
+                        .locationId(LOCATION_ID)
+                        .binId(BIN_ID)
+                        .build())
+                .when(MoveInventoryItemCommand.builder()
+                        .sku(SKU)
+                        .locationId(newLocationId)
+                        .binId(newBinId)
+                        .build())
+                .expectEvents(InventoryItemMovedEvent.builder()
+                        .sku(SKU)
+                        .productId(PRODUCT_ID)
+                        .locationId(newLocationId)
+                        .binId(newBinId)
+                        .build())
+                .expectState(
+                        inventoryItemAggregate -> {
+                            assertEquals(SKU, inventoryItemAggregate.getSku());
+                            assertEquals(PRODUCT_ID, inventoryItemAggregate.getProductId());
+                            assertEquals(newLocationId, inventoryItemAggregate.getLocationId());
+                            assertEquals(newBinId, inventoryItemAggregate.getBinId());
+                        }
+                );
     }
 
     @Test
-    void shouldNotCreateInventoryItemAggregateWhenSkuIsEmpty() {
-        fixture.givenNoPriorActivity()
-                .when(
-                        CreateInventoryItemCommand.builder()
-                                .sku("")
-                                .productId(PRODUCT_ID)
-                                .locationId(LOCATION_ID)
-                                .binId(BIN_ID)
-                                .build())
-                .expectException(IllegalArgumentException.class);
-    }
-
-    @Test
-    void shouldNotCreateInventoryItemAggregateWhenProductIdIsNull() {
-        fixture.givenNoPriorActivity()
-                .when(
-                        CreateInventoryItemCommand.builder()
-                                .sku(SKU)
-                                .productId(null)
-                                .locationId(LOCATION_ID)
-                                .binId(BIN_ID)
-                                .build())
-                .expectException(IllegalArgumentException.class);
-    }
-
-    @Test
-    void shouldNotCreateInventoryItemAggregateWhenProductIdIsEmpty() {
-        fixture.givenNoPriorActivity()
-                .when(
-                        CreateInventoryItemCommand.builder()
-                                .sku(SKU)
-                                .productId("")
-                                .locationId(LOCATION_ID)
-                                .binId(BIN_ID)
-                                .build())
-                .expectException(IllegalArgumentException.class);
-    }
-
-    @Test
-    void shouldNotCreateInventoryItemAggregateWhenLocationIdIsNull() {
-        fixture.givenNoPriorActivity()
-                .when(
-                        CreateInventoryItemCommand.builder()
-                                .sku(SKU)
-                                .productId(PRODUCT_ID)
-                                .locationId(null)
-                                .binId(BIN_ID)
-                                .build())
-                .expectException(IllegalArgumentException.class);
-    }
-
-    @Test
-    void shouldNotCreateInventoryItemAggregateWhenLocationIdIsEmpty() {
-        fixture.givenNoPriorActivity()
-                .when(
-                        CreateInventoryItemCommand.builder()
-                                .sku(SKU)
-                                .productId(PRODUCT_ID)
-                                .locationId("")
-                                .binId(BIN_ID)
-                                .build())
-                .expectException(IllegalArgumentException.class);
-    }
-
-    @Test
-    void shouldNotCreateInventoryItemAggregateWhenBinIdIsNull() {
-        fixture.givenNoPriorActivity()
-                .when(
-                        CreateInventoryItemCommand.builder()
-                                .sku(SKU)
-                                .productId(PRODUCT_ID)
-                                .locationId(LOCATION_ID)
-                                .binId(null)
-                                .build())
-                .expectException(IllegalArgumentException.class);
-    }
-
-    @Test
-    void shouldNotCreateInventoryItemAggregateWhenBinIdIsEmpty() {
-        fixture.givenNoPriorActivity()
-                .when(
-                        CreateInventoryItemCommand.builder()
-                                .sku(SKU)
-                                .productId(PRODUCT_ID)
-                                .locationId(LOCATION_ID)
-                                .binId("")
-                                .build())
-                .expectException(IllegalArgumentException.class);
+    void shouldRemoveInventoryItemAggregate() {
+        fixture.given(InventoryItemCreatedEvent.builder()
+                        .sku(SKU)
+                        .productId(PRODUCT_ID)
+                        .locationId(LOCATION_ID)
+                        .binId(BIN_ID)
+                        .build())
+                .when(RemoveInventoryItemCommand.builder()
+                        .sku(SKU)
+                        .build())
+                .expectEvents(InventoryItemRemovedEvent.builder()
+                        .sku(SKU)
+                        .productId(PRODUCT_ID)
+                        .build());
     }
 }
