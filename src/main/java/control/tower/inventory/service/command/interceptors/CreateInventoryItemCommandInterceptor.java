@@ -14,7 +14,7 @@ import java.util.function.BiFunction;
 
 import static control.tower.core.constants.LogMessages.INTERCEPTED_COMMAND;
 import static control.tower.core.utils.Helper.throwExceptionIfEntityDoesExist;
-import static control.tower.inventory.service.core.constants.ExceptionMessages.INVENTORY_ITEM_WITH_ID_DOES_NOT_EXIST;
+import static control.tower.inventory.service.core.constants.ExceptionMessages.INVENTORY_ITEM_WITH_ID_ALREADY_EXISTS;
 
 @Component
 public class CreateInventoryItemCommandInterceptor implements MessageDispatchInterceptor<CommandMessage<?>> {
@@ -32,7 +32,6 @@ public class CreateInventoryItemCommandInterceptor implements MessageDispatchInt
             List<? extends CommandMessage<?>> messages) {
         return (index, command) -> {
 
-
             if (CreateInventoryItemCommand.class.equals(command.getPayloadType())) {
                 LOGGER.info(String.format(INTERCEPTED_COMMAND, command.getPayloadType()));
 
@@ -42,7 +41,7 @@ public class CreateInventoryItemCommandInterceptor implements MessageDispatchInt
                         createInventoryItemCommand.getSku());
 
                 throwExceptionIfEntityDoesExist(inventoryItemLookupEntity,
-                        String.format(INVENTORY_ITEM_WITH_ID_DOES_NOT_EXIST, createInventoryItemCommand.getSku()));
+                        String.format(INVENTORY_ITEM_WITH_ID_ALREADY_EXISTS, createInventoryItemCommand.getSku()));
             }
 
             return command;
