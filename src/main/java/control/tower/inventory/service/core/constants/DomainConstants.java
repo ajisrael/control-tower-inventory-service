@@ -7,6 +7,7 @@ public class DomainConstants {
     }
 
     public static final String INVENTORY_ITEM = "Inventory item";
+    public static final String INVENTORY_ITEM_LOOKUP_ENTITY = "Inventory item lookup entity";
     public static final String SKU = "sku";
     public static final String PRODUCT_ID = "productId";
     public static final String INVENTORY_ITEM_CREATED_EVENT = "InventoryItemCreatedEvent";
