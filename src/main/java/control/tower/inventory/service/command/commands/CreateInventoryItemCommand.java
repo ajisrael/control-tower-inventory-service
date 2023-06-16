@@ -22,8 +22,8 @@ public class CreateInventoryItemCommand {
 
     public void validate() {
         throwExceptionIfParameterIsEmpty(this.getSku(), SKU_CANNOT_BE_EMPTY);
-        throwExceptionIfParameterIsEmpty(this.getSku(), PRODUCT_ID_CANNOT_BE_EMPTY);
-        throwExceptionIfParameterIsEmpty(this.getSku(), LOCATION_ID_CANNOT_BE_EMPTY);
-        throwExceptionIfParameterIsEmpty(this.getSku(), BIN_ID_CANNOT_BE_EMPTY);
+        throwExceptionIfParameterIsEmpty(this.getProductId(), PRODUCT_ID_CANNOT_BE_EMPTY);
+        throwExceptionIfParameterIsEmpty(this.getLocationId(), LOCATION_ID_CANNOT_BE_EMPTY);
+        throwExceptionIfParameterIsEmpty(this.getBinId(), BIN_ID_CANNOT_BE_EMPTY);
     }
 }
