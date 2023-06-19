@@ -22,9 +22,7 @@ public class InventoryItemsQueryController {
 
     @GetMapping
     public List<InventoryItemRestModel> getInventoryItems() {
-        FindAllInventoryItemsQuery findAllInventoryItemsQuery = new FindAllInventoryItemsQuery();
-
-        List<InventoryItemEntity> inventoryItemEntities = queryGateway.query(findAllInventoryItemsQuery,
+        List<InventoryItemEntity> inventoryItemEntities = queryGateway.query(new FindAllInventoryItemsQuery(),
                 ResponseTypes.multipleInstancesOf(InventoryItemEntity.class)).join();
 
         return convertInventoryItemEntitiesToInventoryItemRestModels(inventoryItemEntities);
@@ -32,9 +30,7 @@ public class InventoryItemsQueryController {
 
     @GetMapping(params = "sku")
     public InventoryItemRestModel getInventoryItem(String sku) {
-        FindInventoryItemQuery findInventoryItemQuery = new FindInventoryItemQuery(sku);
-
-        InventoryItemEntity inventoryItemEntity = queryGateway.query(findInventoryItemQuery,
+        InventoryItemEntity inventoryItemEntity = queryGateway.query(new FindInventoryItemQuery(sku),
                 ResponseTypes.instanceOf(InventoryItemEntity.class)).join();
 
         return convertInventoryItemEntityToInventoryItemRestModel(inventoryItemEntity);
