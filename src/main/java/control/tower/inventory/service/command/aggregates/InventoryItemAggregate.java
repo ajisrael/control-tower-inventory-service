@@ -1,4 +1,4 @@
-package control.tower.inventory.service.command;
+package control.tower.inventory.service.command.aggregates;
 
 import control.tower.inventory.service.command.commands.CreateInventoryItemCommand;
 import control.tower.inventory.service.command.commands.MoveInventoryItemCommand;
