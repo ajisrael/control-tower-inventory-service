@@ -1,9 +1,12 @@
 package control.tower.inventory.service.command.interceptors;
 
+import control.tower.inventory.service.command.commands.RemoveInventoryItemFromPickListCommand;
 import control.tower.inventory.service.command.commands.RemovePickListCommand;
+import control.tower.inventory.service.core.data.entities.InventoryItemAssignedToPickListLookupEntity;
 import control.tower.inventory.service.core.data.entities.PickListLookupEntity;
 import control.tower.inventory.service.core.data.repositories.PickListLookupRepository;
 import org.axonframework.commandhandling.CommandMessage;
+import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.messaging.MessageDispatchInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,9 +24,12 @@ public class RemovePickListCommandInterceptor implements MessageDispatchIntercep
     private static final Logger LOGGER = LoggerFactory.getLogger(RemovePickListCommandInterceptor.class);
 
     private final PickListLookupRepository pickListLookupRepository;
+    private final CommandGateway commandGateway;
 
-    public RemovePickListCommandInterceptor(PickListLookupRepository pickListLookupRepository) {
+    public RemovePickListCommandInterceptor(PickListLookupRepository pickListLookupRepository,
+                                            CommandGateway commandGateway) {
         this.pickListLookupRepository = pickListLookupRepository;
+        this.commandGateway = commandGateway;
     }
 
     @Override
@@ -45,8 +51,15 @@ public class RemovePickListCommandInterceptor implements MessageDispatchIntercep
 
                 throwExceptionIfEntityDoesNotExist(pickListLookupEntity, "Pick list does not exist");
 
-                if (!pickListLookupEntity.getSkuList().isEmpty()) {
-                    throw new IllegalStateException("Cannot delete pick list, still contains skus");
+                for (InventoryItemAssignedToPickListLookupEntity inventoryItemAssignedToPickListLookupEntity:
+                pickListLookupEntity.getSkuList()) {
+                    RemoveInventoryItemFromPickListCommand removeInventoryItemFromPickListCommand =
+                            RemoveInventoryItemFromPickListCommand.builder()
+                                    .pickId(pickId)
+                                    .sku(inventoryItemAssignedToPickListLookupEntity.getSku())
+                                    .build();
+
+                    commandGateway.sendAndWait(removeInventoryItemFromPickListCommand);
                 }
             }
 
