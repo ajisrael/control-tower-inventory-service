@@ -1,8 +1,8 @@
 package control.tower.inventory.service.command.interceptors;
 
 import control.tower.inventory.service.command.commands.CreateInventoryItemCommand;
-import control.tower.inventory.service.core.data.InventoryItemLookupEntity;
-import control.tower.inventory.service.core.data.InventoryItemLookupRepository;
+import control.tower.inventory.service.core.data.entities.InventoryItemLookupEntity;
+import control.tower.inventory.service.core.data.repositories.InventoryItemLookupRepository;
 import org.axonframework.commandhandling.CommandMessage;
 import org.axonframework.commandhandling.GenericCommandMessage;
 import org.junit.jupiter.api.BeforeEach;

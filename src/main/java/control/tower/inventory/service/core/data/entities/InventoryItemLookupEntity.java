@@ -1,4 +1,4 @@
-package control.tower.inventory.service.core.data;
+package control.tower.inventory.service.core.data.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

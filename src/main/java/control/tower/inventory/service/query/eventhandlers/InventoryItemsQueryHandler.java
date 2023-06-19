@@ -1,7 +1,7 @@
-package control.tower.inventory.service.query;
+package control.tower.inventory.service.query.eventhandlers;
 
-import control.tower.inventory.service.core.data.InventoryItemEntity;
-import control.tower.inventory.service.core.data.InventoryItemRepository;
+import control.tower.inventory.service.core.data.entities.InventoryItemEntity;
+import control.tower.inventory.service.core.data.repositories.InventoryItemRepository;
 import control.tower.inventory.service.query.queries.FindAllInventoryItemsQuery;
 import control.tower.inventory.service.query.queries.FindInventoryItemQuery;
 import lombok.AllArgsConstructor;

@@ -1,8 +1,8 @@
 package control.tower.inventory.service.command.interceptors;
 
 import control.tower.inventory.service.command.commands.RemoveInventoryItemCommand;
-import control.tower.inventory.service.core.data.InventoryItemLookupEntity;
-import control.tower.inventory.service.core.data.InventoryItemLookupRepository;
+import control.tower.inventory.service.core.data.entities.InventoryItemLookupEntity;
+import control.tower.inventory.service.core.data.repositories.InventoryItemLookupRepository;
 import org.axonframework.commandhandling.CommandMessage;
 import org.axonframework.messaging.MessageDispatchInterceptor;
 import org.slf4j.Logger;
@@ -13,9 +13,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 
 import static control.tower.core.constants.LogMessages.INTERCEPTED_COMMAND;
-import static control.tower.core.utils.Helper.throwExceptionIfEntityDoesExist;
 import static control.tower.core.utils.Helper.throwExceptionIfEntityDoesNotExist;
-import static control.tower.inventory.service.core.constants.ExceptionMessages.INVENTORY_ITEM_WITH_ID_ALREADY_EXISTS;
 import static control.tower.inventory.service.core.constants.ExceptionMessages.INVENTORY_ITEM_WITH_ID_DOES_NOT_EXIST;
 
 @Component

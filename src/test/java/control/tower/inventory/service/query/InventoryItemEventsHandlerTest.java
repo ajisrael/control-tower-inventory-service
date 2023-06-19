@@ -1,9 +1,10 @@
 package control.tower.inventory.service.query;
 
-import control.tower.inventory.service.core.data.InventoryItemEntity;
-import control.tower.inventory.service.core.data.InventoryItemRepository;
+import control.tower.inventory.service.core.data.entities.InventoryItemEntity;
+import control.tower.inventory.service.core.data.repositories.InventoryItemRepository;
 import control.tower.inventory.service.core.events.InventoryItemCreatedEvent;
 import control.tower.inventory.service.core.events.InventoryItemRemovedEvent;
+import control.tower.inventory.service.query.eventhandlers.InventoryItemEventsHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;

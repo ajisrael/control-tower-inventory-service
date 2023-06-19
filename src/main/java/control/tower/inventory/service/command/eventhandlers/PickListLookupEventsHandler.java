@@ -1,4 +1,4 @@
-package control.tower.inventory.service.command;
+package control.tower.inventory.service.command.eventhandlers;
 
 import control.tower.inventory.service.core.data.entities.InventoryItemAssignedToPickListLookupEntity;
 import control.tower.inventory.service.core.data.repositories.InventoryItemAssignedToPickListLookupRepository;

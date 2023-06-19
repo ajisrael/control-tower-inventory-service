@@ -1,8 +1,9 @@
 package control.tower.inventory.service.query.rest;
 
-import control.tower.inventory.service.core.data.InventoryItemEntity;
+import control.tower.inventory.service.core.data.entities.InventoryItemEntity;
 import control.tower.inventory.service.query.queries.FindAllInventoryItemsQuery;
 import control.tower.inventory.service.query.queries.FindInventoryItemQuery;
+import control.tower.inventory.service.query.rest.model.InventoryItemRestModel;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
 import org.springframework.beans.factory.annotation.Autowired;

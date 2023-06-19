@@ -1,7 +1,8 @@
 package control.tower.inventory.service.command;
 
-import control.tower.inventory.service.core.data.InventoryItemLookupEntity;
-import control.tower.inventory.service.core.data.InventoryItemLookupRepository;
+import control.tower.inventory.service.command.eventhandlers.InventoryItemLookupEventsHandler;
+import control.tower.inventory.service.core.data.entities.InventoryItemLookupEntity;
+import control.tower.inventory.service.core.data.repositories.InventoryItemLookupRepository;
 import control.tower.inventory.service.core.events.InventoryItemCreatedEvent;
 import control.tower.inventory.service.core.events.InventoryItemRemovedEvent;
 import org.junit.jupiter.api.BeforeEach;

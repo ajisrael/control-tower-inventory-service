@@ -1,8 +1,8 @@
 package control.tower.inventory.service.command.interceptors;
 
 import control.tower.inventory.service.command.commands.RemoveInventoryItemFromPickListCommand;
-import control.tower.inventory.service.core.data.InventoryItemLookupEntity;
-import control.tower.inventory.service.core.data.InventoryItemLookupRepository;
+import control.tower.inventory.service.core.data.entities.InventoryItemLookupEntity;
+import control.tower.inventory.service.core.data.repositories.InventoryItemLookupRepository;
 import control.tower.inventory.service.core.data.entities.PickListLookupEntity;
 import control.tower.inventory.service.core.data.repositories.PickListLookupRepository;
 import org.axonframework.commandhandling.CommandMessage;
