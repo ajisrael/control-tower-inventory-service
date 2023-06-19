@@ -1,6 +1,7 @@
 package control.tower.inventory.service.command.interceptors;
 
 import control.tower.inventory.service.command.commands.CompletePickListCommand;
+import control.tower.inventory.service.core.data.entities.InventoryItemAssignedToPickListLookupEntity;
 import control.tower.inventory.service.core.data.entities.PickListLookupEntity;
 import control.tower.inventory.service.core.data.repositories.PickListLookupRepository;
 import org.axonframework.commandhandling.CommandMessage;
@@ -44,6 +45,17 @@ public class CompletePickListCommandInterceptor implements MessageDispatchInterc
                 PickListLookupEntity pickListLookupEntity = pickListLookupRepository.findByPickId(pickId);
 
                 throwExceptionIfEntityDoesNotExist(pickListLookupEntity, "Pick list does not exist");
+
+                boolean allSkusArePicked = true;
+
+                for(InventoryItemAssignedToPickListLookupEntity inventoryItemAssignedToPickListLookupEntity:
+                        pickListLookupEntity.getSkuList()) {
+                    allSkusArePicked &= inventoryItemAssignedToPickListLookupEntity.isSkuPicked();
+                }
+
+                if (!allSkusArePicked) {
+                    throw new IllegalStateException("At least one sku is not picked, cannot mark pick list as complete");
+                }
             }
 
             return command;

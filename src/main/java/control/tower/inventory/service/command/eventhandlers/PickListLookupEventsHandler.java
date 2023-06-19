@@ -5,6 +5,7 @@ import control.tower.inventory.service.core.data.repositories.InventoryItemAssig
 import control.tower.inventory.service.core.data.entities.PickListLookupEntity;
 import control.tower.inventory.service.core.data.repositories.PickListLookupRepository;
 import control.tower.inventory.service.core.events.InventoryItemAddedToPickListEvent;
+import control.tower.inventory.service.core.events.InventoryItemPickedEvent;
 import control.tower.inventory.service.core.events.InventoryItemRemovedFromPickListEvent;
 import control.tower.inventory.service.core.events.PickListCreatedEvent;
 import control.tower.inventory.service.core.events.PickListRemovedEvent;
@@ -62,6 +63,27 @@ public class PickListLookupEventsHandler {
 
         inventoryItemAssignedToPickListLookupRepository.save(inventoryItemAssignedToPickListLookupEntity);
         pickListLookupRepository.save(pickListLookupEntity);
+    }
+
+    @EventHandler
+    public void on(InventoryItemPickedEvent event) {
+        PickListLookupEntity pickListLookupEntity = pickListLookupRepository.findByPickId(event.getPickId());
+
+        throwExceptionIfEntityDoesNotExist(pickListLookupEntity, "Pick list lookup entity not found for given pick id");
+
+        InventoryItemAssignedToPickListLookupEntity inventoryItemAssignedToPickListLookupEntity =
+                inventoryItemAssignedToPickListLookupRepository.findBySku(event.getSku());
+
+        throwExceptionIfEntityDoesNotExist(inventoryItemAssignedToPickListLookupEntity,
+                "inventoryItemAssignedToPickListLookupEntity does not exist");
+
+        if (!inventoryItemAssignedToPickListLookupEntity.getPickListLookup().getPickId().equals(event.getPickId())) {
+            throw new IllegalArgumentException("Inventory item is assigned to different pick list");
+        }
+
+        inventoryItemAssignedToPickListLookupEntity.setSkuPicked(true);
+
+        inventoryItemAssignedToPickListLookupRepository.save(inventoryItemAssignedToPickListLookupEntity);
     }
 
     @EventHandler

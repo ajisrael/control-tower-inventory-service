@@ -1,7 +1,7 @@
 package control.tower.inventory.service.core.data.entities;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
@@ -13,9 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 
-@Getter
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "inventoryitemassignedtopicklistlookup")
 public class InventoryItemAssignedToPickListLookupEntity implements Serializable {
@@ -29,4 +28,11 @@ public class InventoryItemAssignedToPickListLookupEntity implements Serializable
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pick_id")
     private PickListLookupEntity pickListLookup;
+
+    private boolean isSkuPicked = false;
+
+    public InventoryItemAssignedToPickListLookupEntity(String sku, PickListLookupEntity pickListLookup) {
+        this.sku = sku;
+        this.pickListLookup = pickListLookup;
+    }
 }
