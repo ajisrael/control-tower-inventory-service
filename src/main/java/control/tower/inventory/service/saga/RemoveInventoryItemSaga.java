@@ -1,6 +1,9 @@
 package control.tower.inventory.service.saga;
 
 import control.tower.core.commands.DecreaseProductStockForRemovedInventoryCommand;
+import control.tower.inventory.service.command.commands.RemoveInventoryItemFromPickListCommand;
+import control.tower.inventory.service.core.data.entities.InventoryItemAssignedToPickListLookupEntity;
+import control.tower.inventory.service.core.data.repositories.InventoryItemAssignedToPickListLookupRepository;
 import control.tower.inventory.service.core.events.InventoryItemRemovedEvent;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.modelling.saga.EndSaga;
@@ -19,6 +22,9 @@ public class RemoveInventoryItemSaga {
     @Autowired
     private transient CommandGateway commandGateway;
 
+    @Autowired
+    private transient InventoryItemAssignedToPickListLookupRepository inventoryItemAssignedToPickListLookupRepository;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(RemoveInventoryItemSaga.class);
 
     @StartSaga
@@ -26,6 +32,20 @@ public class RemoveInventoryItemSaga {
     @SagaEventHandler(associationProperty = "sku")
     public void on(InventoryItemRemovedEvent inventoryItemRemovedEvent) {
         LOGGER.info(String.format(PROCESSING_INVENTORY_ITEM_REMOVED_EVENT_FOR_SKU, inventoryItemRemovedEvent.getSku()));
+
+        InventoryItemAssignedToPickListLookupEntity inventoryItemAssignedToPickListLookupEntity =
+                inventoryItemAssignedToPickListLookupRepository.findBySku(inventoryItemRemovedEvent.getSku());
+
+        if (inventoryItemAssignedToPickListLookupEntity != null) {
+            LOGGER.info("Removing inventory item from pick list");
+            RemoveInventoryItemFromPickListCommand removeInventoryItemFromPickListCommand = RemoveInventoryItemFromPickListCommand.builder()
+                            .pickId(inventoryItemAssignedToPickListLookupEntity.getPickListLookup().getPickId())
+                            .sku(inventoryItemRemovedEvent.getSku())
+                            .ignoreInventoryItemValidation(true)
+                            .build();
+
+            commandGateway.sendAndWait(removeInventoryItemFromPickListCommand);
+        }
 
         if (inventoryItemRemovedEvent.isCompensatingTransaction()) {
             LOGGER.info(NOT_DECREMENTING_FROM_PRODUCT_STOCK_DUE_TO_COMPENSATING_TRANSACTION_FROM_EXCEPTION);
