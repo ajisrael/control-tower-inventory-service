@@ -68,5 +68,7 @@ public class InventoryServiceApplication {
 	public void configure(EventProcessingConfigurer configurer) {
 		configurer.registerListenerInvocationErrorHandler("inventory-item-group",
 				configuration -> new InventoryServiceEventsErrorHandler());
+		configurer.registerListenerInvocationErrorHandler("pick-list-group",
+				configuration -> new InventoryServiceEventsErrorHandler());
 	}
 }
