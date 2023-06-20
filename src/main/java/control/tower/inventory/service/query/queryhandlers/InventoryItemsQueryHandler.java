@@ -1,4 +1,4 @@
-package control.tower.inventory.service.query.eventhandlers;
+package control.tower.inventory.service.query.queryhandlers;
 
 import control.tower.inventory.service.core.data.entities.InventoryItemEntity;
 import control.tower.inventory.service.core.data.repositories.InventoryItemRepository;

@@ -1,4 +1,4 @@
-package control.tower.inventory.service.query.queryhandlers;
+package control.tower.inventory.service.query.eventhandlers;
 
 import control.tower.inventory.service.core.data.converters.PickListDtoToPickListEntityConverter;
 import control.tower.inventory.service.core.data.converters.PickListEntityToPickListDtoConverter;

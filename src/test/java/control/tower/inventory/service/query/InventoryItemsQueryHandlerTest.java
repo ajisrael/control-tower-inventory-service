@@ -2,7 +2,7 @@ package control.tower.inventory.service.query;
 
 import control.tower.inventory.service.core.data.entities.InventoryItemEntity;
 import control.tower.inventory.service.core.data.repositories.InventoryItemRepository;
-import control.tower.inventory.service.query.eventhandlers.InventoryItemsQueryHandler;
+import control.tower.inventory.service.query.queryhandlers.InventoryItemsQueryHandler;
 import control.tower.inventory.service.query.queries.FindAllInventoryItemsQuery;
 import control.tower.inventory.service.query.queries.FindInventoryItemQuery;
 import org.junit.jupiter.api.BeforeEach;
