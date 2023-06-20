@@ -27,5 +27,6 @@ public class LogMessages {
             "Sending notification to decrease stock level by 1 for productId [%s]";
     public static final String NOT_DECREMENTING_FROM_PRODUCT_STOCK_DUE_TO_COMPENSATING_TRANSACTION_FROM_EXCEPTION =
             "Not decrementing from product stock due to compensating transaction from exception";
+    public static final String REMOVING_INVENTORY_ITEM_FROM_PICK_LIST = "Removing inventory item [%s] from pick list [%s]";
 
 }

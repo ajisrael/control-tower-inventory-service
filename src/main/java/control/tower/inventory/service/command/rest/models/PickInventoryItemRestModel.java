@@ -9,8 +9,8 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 public class PickInventoryItemRestModel {
 
-    @NotEmpty(message = "sku cannot be empty")
+    @NotEmpty(message = "Sku is a required field")
     private String sku;
-    @NotEmpty(message = "pickId cannot be empty")
+    @NotEmpty(message = "PickId is a required field")
     private String pickId;
 }

@@ -17,6 +17,7 @@ import java.util.function.BiFunction;
 
 import static control.tower.core.constants.LogMessages.INTERCEPTED_COMMAND;
 import static control.tower.core.utils.Helper.throwExceptionIfEntityDoesNotExist;
+import static control.tower.inventory.service.core.constants.ExceptionMessages.PICK_LIST_LOOKUP_ENTITY_WITH_ID_DOES_NOT_EXIST;
 
 @Component
 public class RemovePickListCommandInterceptor implements MessageDispatchInterceptor<CommandMessage<?>> {
@@ -49,7 +50,8 @@ public class RemovePickListCommandInterceptor implements MessageDispatchIntercep
 
                 PickListLookupEntity pickListLookupEntity = pickListLookupRepository.findByPickId(pickId);
 
-                throwExceptionIfEntityDoesNotExist(pickListLookupEntity, "Pick list does not exist");
+                throwExceptionIfEntityDoesNotExist(pickListLookupEntity,
+                        String.format(PICK_LIST_LOOKUP_ENTITY_WITH_ID_DOES_NOT_EXIST, pickId));
 
                 for (InventoryItemAssignedToPickListLookupEntity inventoryItemAssignedToPickListLookupEntity:
                 pickListLookupEntity.getSkuList()) {

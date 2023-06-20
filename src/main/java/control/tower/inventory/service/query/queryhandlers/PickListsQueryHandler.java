@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
+import static control.tower.inventory.service.core.constants.ExceptionMessages.PICK_LIST_ENTITY_WITH_ID_DOES_NOT_EXIST;
+
 @Component
 @AllArgsConstructor
 public class PickListsQueryHandler {
@@ -35,7 +37,9 @@ public class PickListsQueryHandler {
 
     @QueryHandler
     public PickListDto findPickList(FindPickListQuery query) {
-        PickListEntity pickListEntity = pickListRepository.findByPickId(query.getPickId());
+        PickListEntity pickListEntity = pickListRepository.findById(query.getPickId()).orElseThrow(
+                () -> new IllegalArgumentException(
+                        String.format(PICK_LIST_ENTITY_WITH_ID_DOES_NOT_EXIST, query.getPickId())));
 
         return pickListEntityToPickListDtoConverter.convert(pickListEntity);
     }

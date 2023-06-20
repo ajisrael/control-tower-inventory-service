@@ -11,8 +11,8 @@ import java.util.Date;
 @NoArgsConstructor
 public class UpdatePickListDateRestModel {
 
-    @NotEmpty(message = "PickId cannot be empty")
+    @NotEmpty(message = "PickId is a required field")
     private String pickId;
-    @NotNull(message = "Pick by date is required")
+    @NotNull(message = "PickByDate is a required field")
     private Date pickByDate;
 }

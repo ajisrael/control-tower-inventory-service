@@ -31,16 +31,22 @@ public class RemoveInventoryItemSaga {
     @EndSaga
     @SagaEventHandler(associationProperty = "sku")
     public void on(InventoryItemRemovedEvent inventoryItemRemovedEvent) {
-        LOGGER.info(String.format(PROCESSING_INVENTORY_ITEM_REMOVED_EVENT_FOR_SKU, inventoryItemRemovedEvent.getSku()));
+        String sku = inventoryItemRemovedEvent.getSku();
+
+        LOGGER.info(String.format(PROCESSING_INVENTORY_ITEM_REMOVED_EVENT_FOR_SKU, sku));
 
         InventoryItemAssignedToPickListLookupEntity inventoryItemAssignedToPickListLookupEntity =
-                inventoryItemAssignedToPickListLookupRepository.findBySku(inventoryItemRemovedEvent.getSku());
+                inventoryItemAssignedToPickListLookupRepository.findBySku(sku);
 
         if (inventoryItemAssignedToPickListLookupEntity != null) {
-            LOGGER.info("Removing inventory item from pick list");
-            RemoveInventoryItemFromPickListCommand removeInventoryItemFromPickListCommand = RemoveInventoryItemFromPickListCommand.builder()
-                            .pickId(inventoryItemAssignedToPickListLookupEntity.getPickListLookup().getPickId())
-                            .sku(inventoryItemRemovedEvent.getSku())
+            String pickId = inventoryItemAssignedToPickListLookupEntity.getPickListLookup().getPickId();
+
+            LOGGER.info(String.format(REMOVING_INVENTORY_ITEM_FROM_PICK_LIST, sku, pickId));
+
+            RemoveInventoryItemFromPickListCommand removeInventoryItemFromPickListCommand =
+                    RemoveInventoryItemFromPickListCommand.builder()
+                            .pickId(pickId)
+                            .sku(sku)
                             .ignoreInventoryItemValidation(true)
                             .build();
 
@@ -50,20 +56,22 @@ public class RemoveInventoryItemSaga {
         if (inventoryItemRemovedEvent.isCompensatingTransaction()) {
             LOGGER.info(NOT_DECREMENTING_FROM_PRODUCT_STOCK_DUE_TO_COMPENSATING_TRANSACTION_FROM_EXCEPTION);
         } else {
-            LOGGER.info(String.format(ISSUING_DECREASE_PRODUCT_STOCK_FOR_REMOVE_INVENTORY_ITEM_COMMAND, inventoryItemRemovedEvent.getProductId()));
+            String productId = inventoryItemRemovedEvent.getProductId();
 
-            DecreaseProductStockForRemovedInventoryCommand decreaseProductStockForRemovedInventoryCommand = DecreaseProductStockForRemovedInventoryCommand.builder()
-                    .productId(inventoryItemRemovedEvent.getProductId())
-                    .sku(inventoryItemRemovedEvent.getSku())
-                    .build();
+            LOGGER.info(String.format(ISSUING_DECREASE_PRODUCT_STOCK_FOR_REMOVE_INVENTORY_ITEM_COMMAND, productId));
+
+            DecreaseProductStockForRemovedInventoryCommand decreaseProductStockForRemovedInventoryCommand =
+                    DecreaseProductStockForRemovedInventoryCommand.builder()
+                            .productId(productId)
+                            .sku(sku)
+                            .build();
 
             commandGateway.send(decreaseProductStockForRemovedInventoryCommand, (commandMessage, commandResultMessage) -> {
                 if (commandResultMessage.isExceptional()) {
                     LOGGER.error(String.format(EXCEPTION_ENCOUNTERED_WHEN_ISSUING_DECREASE_PRODUCT_STOCK_FOR_REMOVED_INVENTORY_ITEM_COMMAND,
                             commandResultMessage.exceptionResult().getLocalizedMessage()));
 
-                    LOGGER.info(String.format(SENDING_NOTIFICATION_TO_DECREASE_STOCK_LEVEL_BY_1_FOR_PRODUCT_ID,
-                            inventoryItemRemovedEvent.getProductId()));
+                    LOGGER.info(String.format(SENDING_NOTIFICATION_TO_DECREASE_STOCK_LEVEL_BY_1_FOR_PRODUCT_ID, productId));
                 }
             });
         }

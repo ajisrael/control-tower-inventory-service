@@ -15,6 +15,8 @@ import java.util.function.BiFunction;
 
 import static control.tower.core.constants.LogMessages.INTERCEPTED_COMMAND;
 import static control.tower.core.utils.Helper.throwExceptionIfEntityDoesNotExist;
+import static control.tower.inventory.service.core.constants.ExceptionMessages.AT_LEAST_ONE_SKU_IS_NOT_PICKED_CANNOT_COMPLETE_PICK_LIST;
+import static control.tower.inventory.service.core.constants.ExceptionMessages.PICK_LIST_LOOKUP_ENTITY_WITH_ID_DOES_NOT_EXIST;
 
 @Component
 public class CompletePickListCommandInterceptor implements MessageDispatchInterceptor<CommandMessage<?>> {
@@ -44,7 +46,8 @@ public class CompletePickListCommandInterceptor implements MessageDispatchInterc
 
                 PickListLookupEntity pickListLookupEntity = pickListLookupRepository.findByPickId(pickId);
 
-                throwExceptionIfEntityDoesNotExist(pickListLookupEntity, "Pick list does not exist");
+                throwExceptionIfEntityDoesNotExist(pickListLookupEntity,
+                        String.format(PICK_LIST_LOOKUP_ENTITY_WITH_ID_DOES_NOT_EXIST, pickId));
 
                 boolean allSkusArePicked = true;
 
@@ -54,7 +57,7 @@ public class CompletePickListCommandInterceptor implements MessageDispatchInterc
                 }
 
                 if (!allSkusArePicked) {
-                    throw new IllegalStateException("At least one sku is not picked, cannot mark pick list as complete");
+                    throw new IllegalStateException(AT_LEAST_ONE_SKU_IS_NOT_PICKED_CANNOT_COMPLETE_PICK_LIST);
                 }
             }
 

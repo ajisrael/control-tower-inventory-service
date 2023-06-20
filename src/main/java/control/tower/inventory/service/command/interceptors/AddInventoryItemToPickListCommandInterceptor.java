@@ -19,7 +19,7 @@ import java.util.function.BiFunction;
 import static control.tower.core.constants.LogMessages.INTERCEPTED_COMMAND;
 import static control.tower.core.utils.Helper.throwExceptionIfEntityDoesExist;
 import static control.tower.core.utils.Helper.throwExceptionIfEntityDoesNotExist;
-import static control.tower.inventory.service.core.constants.ExceptionMessages.INVENTORY_ITEM_WITH_ID_DOES_NOT_EXIST;
+import static control.tower.inventory.service.core.constants.ExceptionMessages.*;
 
 @Component
 public class AddInventoryItemToPickListCommandInterceptor implements MessageDispatchInterceptor<CommandMessage<?>> {
@@ -61,17 +61,20 @@ public class AddInventoryItemToPickListCommandInterceptor implements MessageDisp
 
                 PickListLookupEntity pickListLookupEntity = pickListLookupRepository.findByPickId(pickId);
 
-                throwExceptionIfEntityDoesNotExist(pickListLookupEntity, "Pick list does not exist");
+                throwExceptionIfEntityDoesNotExist(pickListLookupEntity,
+                        String.format(PICK_LIST_LOOKUP_ENTITY_WITH_ID_DOES_NOT_EXIST, pickId));
 
                 if (pickListLookupEntity.isSkuInSkuList(sku)) {
-                    throw new IllegalArgumentException("Sku is already in pick list");
+                    throw new IllegalArgumentException(
+                            String.format(INVENTORY_ITEM_ALREADY_ASSIGNED_TO_PICK_LIST, sku, pickId));
                 }
 
                 InventoryItemAssignedToPickListLookupEntity inventoryItemAssignedToPickListLookupEntity =
                         inventoryItemAssignedToPickListLookupRepository.findBySku(sku);
 
                 throwExceptionIfEntityDoesExist(inventoryItemAssignedToPickListLookupEntity,
-                        "Sku already assigned to different pickList");
+                        String.format(INVENTORY_ITEM_IS_ASSIGNED_TO_DIFFERENT_PICK_LIST, sku,
+                                inventoryItemAssignedToPickListLookupEntity.getPickListLookup().getPickId()));
             }
 
             return command;

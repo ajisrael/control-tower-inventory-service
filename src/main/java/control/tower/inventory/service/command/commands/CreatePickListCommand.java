@@ -9,6 +9,7 @@ import java.util.List;
 
 import static control.tower.core.utils.Helper.throwExceptionIfParameterIsEmpty;
 import static control.tower.core.utils.Helper.throwExceptionIfParameterIsNull;
+import static control.tower.inventory.service.core.constants.ExceptionMessages.*;
 
 @Getter
 @Builder
@@ -20,13 +21,13 @@ public class CreatePickListCommand {
     private Date pickByDate;
 
     public void validate() {
-        throwExceptionIfParameterIsEmpty(this.getPickId(), "Pick id cannot be empty");
-        throwExceptionIfParameterIsNull(this.getSkuList(), "Sku list cannot be null");
+        throwExceptionIfParameterIsEmpty(this.getPickId(), PICK_ID_CANNOT_BE_EMPTY);
+        throwExceptionIfParameterIsNull(this.getSkuList(), SKU_LIST_CANNOT_BE_NULL);
 
         for (String sku : this.getSkuList()) {
-            throwExceptionIfParameterIsEmpty(sku, "Sku in sku list cannot be empty");
+            throwExceptionIfParameterIsEmpty(sku, SKU_IN_LIST_CANNOT_BE_EMPTY);
         }
 
-        throwExceptionIfParameterIsNull(this.getPickByDate(), "Pick by date cannot by null");
+        throwExceptionIfParameterIsNull(this.getPickByDate(), PICK_BY_DATE_CANNOT_BE_NULL);
     }
 }

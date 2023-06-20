@@ -26,6 +26,6 @@ public class InventoryItemsQueryHandler {
     @QueryHandler
     public  InventoryItemEntity findInventoryItem(FindInventoryItemQuery query) {
         return inventoryItemRepository.findById(query.getSku()).orElseThrow(
-                () -> new IllegalStateException(String.format(INVENTORY_ITEM_WITH_ID_DOES_NOT_EXIST, query.getSku())));
+                () -> new IllegalArgumentException(String.format(INVENTORY_ITEM_WITH_ID_DOES_NOT_EXIST, query.getSku())));
     }
 }

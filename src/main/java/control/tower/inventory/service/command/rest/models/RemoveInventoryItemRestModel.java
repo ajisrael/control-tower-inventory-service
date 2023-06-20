@@ -9,6 +9,6 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class RemoveInventoryItemRestModel {
 
-    @NotBlank(message = "SKU is a required field")
+    @NotBlank(message = "Sku is a required field")
     private String sku;
 }

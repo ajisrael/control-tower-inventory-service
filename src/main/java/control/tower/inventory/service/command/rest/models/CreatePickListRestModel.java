@@ -12,9 +12,9 @@ import java.util.List;
 @NoArgsConstructor
 public class CreatePickListRestModel {
 
-    @NotNull(message = "Sku List is required")
-    @NotEmpty(message = "skuList cannot be empty")
+    @NotNull(message = "SkuList is a required field")
+    @NotEmpty(message = "SkuList is a required field")
     private List<String> skuList;
-    @NotNull(message = "Pick by date is required")
+    @NotNull(message = "PickByDate is a required field")
     private Date pickByDate;
 }

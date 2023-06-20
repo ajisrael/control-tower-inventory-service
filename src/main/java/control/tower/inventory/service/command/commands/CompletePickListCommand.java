@@ -5,6 +5,7 @@ import lombok.Getter;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
 import static control.tower.core.utils.Helper.throwExceptionIfParameterIsEmpty;
+import static control.tower.inventory.service.core.constants.ExceptionMessages.PICK_ID_CANNOT_BE_EMPTY;
 
 @Getter
 @Builder
@@ -14,6 +15,6 @@ public class CompletePickListCommand {
     private String pickId;
 
     public void validate() {
-        throwExceptionIfParameterIsEmpty(this.getPickId(), "PickID cannot be empty");
+        throwExceptionIfParameterIsEmpty(this.getPickId(), PICK_ID_CANNOT_BE_EMPTY);
     }
 }

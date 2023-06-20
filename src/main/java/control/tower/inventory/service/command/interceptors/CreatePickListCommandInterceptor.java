@@ -19,7 +19,7 @@ import java.util.function.BiFunction;
 import static control.tower.core.constants.LogMessages.INTERCEPTED_COMMAND;
 import static control.tower.core.utils.Helper.throwExceptionIfEntityDoesExist;
 import static control.tower.core.utils.Helper.throwExceptionIfEntityDoesNotExist;
-import static control.tower.inventory.service.core.constants.ExceptionMessages.INVENTORY_ITEM_WITH_ID_DOES_NOT_EXIST;
+import static control.tower.inventory.service.core.constants.ExceptionMessages.*;
 
 @Component
 public class CreatePickListCommandInterceptor implements MessageDispatchInterceptor<CommandMessage<?>> {
@@ -52,7 +52,8 @@ public class CreatePickListCommandInterceptor implements MessageDispatchIntercep
 
                 PickListLookupEntity pickListLookupEntity = pickListLookupRepository.findByPickId(createPickListCommand.getPickId());
 
-                throwExceptionIfEntityDoesExist(pickListLookupEntity, "Pick list should not exist");
+                throwExceptionIfEntityDoesExist(pickListLookupEntity,
+                        String.format(PICK_LIST_LOOKUP_ENTITY_WITH_ID_ALREADY_EXISTS, createPickListCommand.getPickId()));
 
                 for (String sku : createPickListCommand.getSkuList()) {
                     InventoryItemLookupEntity inventoryItemLookupEntity = inventoryItemLookupRepository.findBySku(sku);
@@ -63,7 +64,9 @@ public class CreatePickListCommandInterceptor implements MessageDispatchIntercep
                     InventoryItemAssignedToPickListLookupEntity inventoryItemAssignedToPickListLookupEntity =
                             inventoryItemAssignedToPickListLookupRepository.findBySku(sku);
 
-                    throwExceptionIfEntityDoesExist(inventoryItemAssignedToPickListLookupEntity, "Inventory item is already assigned to a pick list");
+                    throwExceptionIfEntityDoesExist(inventoryItemAssignedToPickListLookupEntity,
+                            String.format(INVENTORY_ITEM_IS_ASSIGNED_TO_DIFFERENT_PICK_LIST, sku,
+                                    inventoryItemAssignedToPickListLookupEntity.getPickListLookup().getPickId()));
                 }
             }
 

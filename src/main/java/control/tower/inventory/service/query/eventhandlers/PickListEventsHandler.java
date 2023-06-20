@@ -27,6 +27,7 @@ import java.util.Map;
 
 import static control.tower.core.utils.Helper.throwExceptionIfEntityDoesExist;
 import static control.tower.core.utils.Helper.throwExceptionIfEntityDoesNotExist;
+import static control.tower.inventory.service.core.constants.ExceptionMessages.*;
 
 @Component
 @ProcessingGroup("pick-list-group")
@@ -82,42 +83,53 @@ public class PickListEventsHandler {
 
     @EventHandler
     public void on(InventoryItemAddedToPickListEvent event) {
-        PickListEntity pickListEntity = pickListRepository.findByPickId(event.getPickId());
+        String pickId = event.getPickId();
 
-        throwExceptionIfEntityDoesNotExist(pickListEntity, "Pick list entity does not exist");
+        PickListEntity pickListEntity = pickListRepository.findByPickId(pickId);
+
+        throwExceptionIfEntityDoesNotExist(pickListEntity,
+                String.format(PICK_LIST_ENTITY_WITH_ID_DOES_NOT_EXIST, pickId));
+
+        String sku = event.getSku();
 
         InventoryItemAssignedToPickListEntity inventoryItemAssignedToPickListEntity =
-                inventoryItemAssignedToPickListRepository.findBySku(event.getSku());
+                inventoryItemAssignedToPickListRepository.findBySku(sku);
 
-        throwExceptionIfEntityDoesExist(
-                inventoryItemAssignedToPickListEntity, "InventoryItemAssignedToPickListEntity already exists");
+        throwExceptionIfEntityDoesExist(inventoryItemAssignedToPickListEntity,
+                String.format(INVENTORY_ITEM_ASSIGNED_TO_PICK_LIST_ENTITY_WITH_ID_ALREADY_EXISTS, sku));
 
         PickListDto pickListDto = pickListEntityToPickListDtoConverter.convert(pickListEntity);
 
-        if (pickListDto.getSkuMap().containsKey(event.getSku())) {
-            throw new IllegalArgumentException("Sku already in pick list entity sku list");
+        if (pickListDto.getSkuMap().containsKey(sku)) {
+            throw new IllegalArgumentException(
+                    String.format(INVENTORY_ITEM_ALREADY_ASSIGNED_TO_PICK_LIST, sku, pickId));
         }
 
         inventoryItemAssignedToPickListRepository.save(
-                new InventoryItemAssignedToPickListEntity(event.getSku(), pickListEntity, Boolean.FALSE));
+                new InventoryItemAssignedToPickListEntity(sku, pickListEntity, Boolean.FALSE));
     }
 
     @EventHandler
     public void on(InventoryItemPickedEvent event) {
-        PickListEntity pickListEntity = pickListRepository.findByPickId(event.getPickId());
+        String pickId = event.getPickId();
 
-        throwExceptionIfEntityDoesNotExist(pickListEntity, "Pick list entity does not exist");
+        PickListEntity pickListEntity = pickListRepository.findByPickId(pickId);
+
+        throwExceptionIfEntityDoesNotExist(pickListEntity,
+                String.format(PICK_LIST_ENTITY_WITH_ID_DOES_NOT_EXIST, pickId));
+
+        String sku = event.getSku();
 
         InventoryItemAssignedToPickListEntity inventoryItemAssignedToPickListEntity =
-                inventoryItemAssignedToPickListRepository.findBySku(event.getSku());
+                inventoryItemAssignedToPickListRepository.findBySku(sku);
 
-        throwExceptionIfEntityDoesNotExist(
-                inventoryItemAssignedToPickListEntity, "InventoryItemAssignedToPickListEntity does not exist");
+        throwExceptionIfEntityDoesNotExist(inventoryItemAssignedToPickListEntity,
+                String.format(INVENTORY_ITEM_ASSIGNED_TO_PICK_LIST_ENTITY_WITH_ID_DOES_NOT_EXIST, sku));
 
         PickListDto pickListDto = pickListEntityToPickListDtoConverter.convert(pickListEntity);
 
-        if (!pickListDto.getSkuMap().containsKey(event.getSku())) {
-            throw new IllegalArgumentException("Sku not in pick list entity sku list");
+        if (!pickListDto.getSkuMap().containsKey(sku)) {
+            throw new IllegalArgumentException(String.format(SKU_IS_NOT_IN_PICK_LIST, sku, pickId));
         }
 
         inventoryItemAssignedToPickListEntity.setSkuPicked(true);
@@ -126,20 +138,25 @@ public class PickListEventsHandler {
 
     @EventHandler
     public void on(InventoryItemRemovedFromPickListEvent event) {
-        PickListEntity pickListEntity = pickListRepository.findByPickId(event.getPickId());
+        String pickId = event.getPickId();
 
-        throwExceptionIfEntityDoesNotExist(pickListEntity, "Pick list entity does not exist");
+        PickListEntity pickListEntity = pickListRepository.findByPickId(pickId);
+
+        throwExceptionIfEntityDoesNotExist(pickListEntity,
+                String.format(PICK_LIST_ENTITY_WITH_ID_DOES_NOT_EXIST, pickId));
+
+        String sku = event.getSku();
 
         InventoryItemAssignedToPickListEntity inventoryItemAssignedToPickListEntity =
-                inventoryItemAssignedToPickListRepository.findBySku(event.getSku());
+                inventoryItemAssignedToPickListRepository.findBySku(sku);
 
-        throwExceptionIfEntityDoesNotExist(
-                inventoryItemAssignedToPickListEntity, "InventoryItemAssignedToPickListEntity does not exist");
+        throwExceptionIfEntityDoesNotExist(inventoryItemAssignedToPickListEntity,
+                String.format(INVENTORY_ITEM_ASSIGNED_TO_PICK_LIST_ENTITY_WITH_ID_DOES_NOT_EXIST, sku));
 
         PickListDto pickListDto = pickListEntityToPickListDtoConverter.convert(pickListEntity);
 
         if (!pickListDto.getSkuMap().containsKey(event.getSku())) {
-            throw new IllegalArgumentException("Sku is not in pick list entity sku list");
+            throw new IllegalArgumentException(String.format(SKU_IS_NOT_IN_PICK_LIST, sku, pickId));
         }
 
         List<InventoryItemAssignedToPickListEntity> skuList = pickListEntity.getSkuList();
@@ -154,7 +171,8 @@ public class PickListEventsHandler {
     public void on(PickListDateUpdatedEvent event) {
         PickListEntity pickListEntity = pickListRepository.findByPickId(event.getPickId());
 
-        throwExceptionIfEntityDoesNotExist(pickListEntity, "Pick list entity does not exist");
+        throwExceptionIfEntityDoesNotExist(pickListEntity,
+                String.format(PICK_LIST_ENTITY_WITH_ID_DOES_NOT_EXIST, event.getPickId()));
 
         pickListEntity.setPickByDate(event.getPickByDate());
 
@@ -165,7 +183,8 @@ public class PickListEventsHandler {
     public void on(PickListCompletedEvent event) {
         PickListEntity pickListEntity = pickListRepository.findByPickId(event.getPickId());
 
-        throwExceptionIfEntityDoesNotExist(pickListEntity, "Pick list entity does not exist");
+        throwExceptionIfEntityDoesNotExist(pickListEntity,
+                String.format(PICK_LIST_ENTITY_WITH_ID_DOES_NOT_EXIST, event.getPickId()));
 
         pickListEntity.setComplete(true);
 
@@ -176,7 +195,8 @@ public class PickListEventsHandler {
     public void on(PickListRemovedEvent event) {
         PickListEntity pickListEntity = pickListRepository.findByPickId(event.getPickId());
 
-        throwExceptionIfEntityDoesNotExist(pickListEntity, "Pick list entity does not exist");
+        throwExceptionIfEntityDoesNotExist(pickListEntity,
+                String.format(PICK_LIST_ENTITY_WITH_ID_DOES_NOT_EXIST, event.getPickId()));
 
         pickListRepository.delete(pickListEntity);
     }

@@ -8,6 +8,10 @@ public class DomainConstants {
 
     public static final String INVENTORY_ITEM = "Inventory item";
     public static final String INVENTORY_ITEM_LOOKUP_ENTITY = "Inventory item lookup entity";
+    public static final String PICK_LIST_LOOKUP_ENTITY = "Pick list lookup entity";
+    public static final String PICK_LIST_ENTITY = "Pick list entity";
+    public static final String INVENTORY_ITEM_ASSIGNED_TO_PICK_LIST_LOOKUP_ENTITY = "Inventory item assigned to pick list lookup entity";
+    public static final String INVENTORY_ITEM_ASSIGNED_TO_PICK_LIST_ENTITY = "Inventory item assigned to pick list entity";
     public static final String SKU = "sku";
     public static final String PRODUCT_ID = "productId";
     public static final String INVENTORY_ITEM_CREATED_EVENT = "InventoryItemCreatedEvent";
