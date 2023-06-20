@@ -91,6 +91,6 @@ class InventoryItemsQueryHandlerTest {
         FindInventoryItemQuery query = new FindInventoryItemQuery(sku);
 
         // Act & Assert
-        assertThrows(IllegalStateException.class, () -> queryHandler.findInventoryItem(query));
+        assertThrows(IllegalArgumentException.class, () -> queryHandler.findInventoryItem(query));
     }
 }
