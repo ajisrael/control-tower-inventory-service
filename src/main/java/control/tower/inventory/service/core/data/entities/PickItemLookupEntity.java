@@ -1,6 +1,5 @@
 package control.tower.inventory.service.core.data.entities;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,12 +14,11 @@ import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
-@Table(name = "inventoryitemassignedtopicklist")
-public class InventoryItemAssignedToPickListEntity implements Serializable {
+@Table(name = "inventoryitemassignedtopicklistlookup")
+public class PickItemLookupEntity implements Serializable {
 
-    private static final long serialVersionUID = -3787108556148621736L;
+    private static final long serialVersionUID = -4787108556148621736L;
 
     @Id
     @Column(unique = true)
@@ -28,7 +26,12 @@ public class InventoryItemAssignedToPickListEntity implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pick_id")
-    private PickListEntity pickList;
+    private PickListLookupEntity pickListLookup;
 
-    private boolean isSkuPicked;
+    private boolean isSkuPicked = false;
+
+    public PickItemLookupEntity(String sku, PickListLookupEntity pickListLookup) {
+        this.sku = sku;
+        this.pickListLookup = pickListLookup;
+    }
 }

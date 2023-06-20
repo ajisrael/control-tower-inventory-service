@@ -1,6 +1,5 @@
 package control.tower.inventory.service.core.data.entities;
 
-import control.tower.inventory.service.core.data.entities.InventoryItemAssignedToPickListLookupEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,11 +26,11 @@ public class PickListLookupEntity implements Serializable {
     @Column(unique = true)
     private String pickId;
     @OneToMany(mappedBy = "pickListLookup", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<InventoryItemAssignedToPickListLookupEntity> skuList;
+    private List<PickItemLookupEntity> skuList;
 
     public boolean isSkuInSkuList(String sku) {
         return this.getSkuList().stream()
-                .map(InventoryItemAssignedToPickListLookupEntity::getSku)
+                .map(PickItemLookupEntity::getSku)
                 .anyMatch(matchingSku -> matchingSku.equals(sku));
     }
 }

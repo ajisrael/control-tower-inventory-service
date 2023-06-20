@@ -1,7 +1,7 @@
 package control.tower.inventory.service.core.data.converters;
 
 import control.tower.inventory.service.core.data.dtos.PickListDto;
-import control.tower.inventory.service.core.data.entities.InventoryItemAssignedToPickListEntity;
+import control.tower.inventory.service.core.data.entities.PickItemEntity;
 import control.tower.inventory.service.core.data.entities.PickListEntity;
 import org.springframework.stereotype.Component;
 
@@ -17,10 +17,10 @@ public class PickListDtoToPickListEntityConverter {
         pickListEntity.setPickByDate(pickListDto.getPickByDate());
         pickListEntity.setComplete(pickListDto.isPicked());
 
-        List<InventoryItemAssignedToPickListEntity> skuList = new ArrayList<>();
+        List<PickItemEntity> skuList = new ArrayList<>();
 
         for (String sku: pickListDto.getSkuMap().keySet()) {
-            skuList.add(new InventoryItemAssignedToPickListEntity(sku, pickListEntity, pickListDto.getSkuMap().get(sku)));
+            skuList.add(new PickItemEntity(sku, pickListEntity, pickListDto.getSkuMap().get(sku)));
         }
 
         pickListEntity.setSkuList(skuList);

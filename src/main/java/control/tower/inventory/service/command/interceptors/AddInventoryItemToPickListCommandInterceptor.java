@@ -3,9 +3,9 @@ package control.tower.inventory.service.command.interceptors;
 import control.tower.inventory.service.command.commands.AddInventoryItemToPickListCommand;
 import control.tower.inventory.service.core.data.entities.InventoryItemLookupEntity;
 import control.tower.inventory.service.core.data.repositories.InventoryItemLookupRepository;
-import control.tower.inventory.service.core.data.entities.InventoryItemAssignedToPickListLookupEntity;
+import control.tower.inventory.service.core.data.entities.PickItemLookupEntity;
 import control.tower.inventory.service.core.data.entities.PickListLookupEntity;
-import control.tower.inventory.service.core.data.repositories.InventoryItemAssignedToPickListLookupRepository;
+import control.tower.inventory.service.core.data.repositories.PickItemLookupRepository;
 import control.tower.inventory.service.core.data.repositories.PickListLookupRepository;
 import org.axonframework.commandhandling.CommandMessage;
 import org.axonframework.messaging.MessageDispatchInterceptor;
@@ -28,14 +28,14 @@ public class AddInventoryItemToPickListCommandInterceptor implements MessageDisp
 
     private final InventoryItemLookupRepository inventoryItemLookupRepository;
     private final PickListLookupRepository pickListLookupRepository;
-    private final InventoryItemAssignedToPickListLookupRepository inventoryItemAssignedToPickListLookupRepository;
+    private final PickItemLookupRepository pickItemLookupRepository;
 
     public AddInventoryItemToPickListCommandInterceptor(InventoryItemLookupRepository inventoryItemLookupRepository,
                                                         PickListLookupRepository pickListLookupRepository,
-                                                        InventoryItemAssignedToPickListLookupRepository inventoryItemAssignedToPickListLookupRepository) {
+                                                        PickItemLookupRepository pickItemLookupRepository) {
         this.inventoryItemLookupRepository = inventoryItemLookupRepository;
         this.pickListLookupRepository = pickListLookupRepository;
-        this.inventoryItemAssignedToPickListLookupRepository = inventoryItemAssignedToPickListLookupRepository;
+        this.pickItemLookupRepository = pickItemLookupRepository;
     }
 
     @Override
@@ -70,12 +70,12 @@ public class AddInventoryItemToPickListCommandInterceptor implements MessageDisp
                             String.format(INVENTORY_ITEM_ALREADY_ASSIGNED_TO_PICK_LIST, sku, pickId));
                 }
 
-                InventoryItemAssignedToPickListLookupEntity inventoryItemAssignedToPickListLookupEntity =
-                        inventoryItemAssignedToPickListLookupRepository.findBySku(sku);
+                PickItemLookupEntity pickItemLookupEntity =
+                        pickItemLookupRepository.findBySku(sku);
 
-                throwExceptionIfEntityDoesExist(inventoryItemAssignedToPickListLookupEntity,
+                throwExceptionIfEntityDoesExist(pickItemLookupEntity,
                         String.format(INVENTORY_ITEM_IS_ASSIGNED_TO_DIFFERENT_PICK_LIST, sku,
-                                inventoryItemAssignedToPickListLookupEntity.getPickListLookup().getPickId()));
+                                pickItemLookupEntity.getPickListLookup().getPickId()));
             }
 
             return command;

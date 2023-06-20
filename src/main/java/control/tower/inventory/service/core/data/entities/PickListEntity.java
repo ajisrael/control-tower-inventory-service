@@ -23,13 +23,13 @@ public class PickListEntity implements Serializable {
     @Column(unique = true)
     private String pickId;
     @OneToMany(mappedBy = "pickList", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<InventoryItemAssignedToPickListEntity> skuList;
+    private List<PickItemEntity> skuList;
     private Date pickByDate;
     private boolean isComplete;
 
     public boolean isSkuInSkuList(String sku) {
         return this.getSkuList().stream()
-                .map(InventoryItemAssignedToPickListEntity::getSku)
+                .map(PickItemEntity::getSku)
                 .anyMatch(matchingSku -> matchingSku.equals(sku));
     }
 }

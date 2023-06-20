@@ -2,8 +2,8 @@ package control.tower.inventory.service.saga;
 
 import control.tower.core.commands.DecreaseProductStockForRemovedInventoryCommand;
 import control.tower.inventory.service.command.commands.RemoveInventoryItemFromPickListCommand;
-import control.tower.inventory.service.core.data.entities.InventoryItemAssignedToPickListLookupEntity;
-import control.tower.inventory.service.core.data.repositories.InventoryItemAssignedToPickListLookupRepository;
+import control.tower.inventory.service.core.data.entities.PickItemLookupEntity;
+import control.tower.inventory.service.core.data.repositories.PickItemLookupRepository;
 import control.tower.inventory.service.core.events.InventoryItemRemovedEvent;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.modelling.saga.EndSaga;
@@ -23,7 +23,7 @@ public class RemoveInventoryItemSaga {
     private transient CommandGateway commandGateway;
 
     @Autowired
-    private transient InventoryItemAssignedToPickListLookupRepository inventoryItemAssignedToPickListLookupRepository;
+    private transient PickItemLookupRepository pickItemLookupRepository;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RemoveInventoryItemSaga.class);
 
@@ -35,11 +35,11 @@ public class RemoveInventoryItemSaga {
 
         LOGGER.info(String.format(PROCESSING_INVENTORY_ITEM_REMOVED_EVENT_FOR_SKU, sku));
 
-        InventoryItemAssignedToPickListLookupEntity inventoryItemAssignedToPickListLookupEntity =
-                inventoryItemAssignedToPickListLookupRepository.findBySku(sku);
+        PickItemLookupEntity pickItemLookupEntity =
+                pickItemLookupRepository.findBySku(sku);
 
-        if (inventoryItemAssignedToPickListLookupEntity != null) {
-            String pickId = inventoryItemAssignedToPickListLookupEntity.getPickListLookup().getPickId();
+        if (pickItemLookupEntity != null) {
+            String pickId = pickItemLookupEntity.getPickListLookup().getPickId();
 
             LOGGER.info(String.format(REMOVING_INVENTORY_ITEM_FROM_PICK_LIST, sku, pickId));
 

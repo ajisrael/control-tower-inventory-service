@@ -3,8 +3,8 @@ package control.tower.inventory.service.query.eventhandlers;
 import control.tower.inventory.service.core.data.converters.PickListDtoToPickListEntityConverter;
 import control.tower.inventory.service.core.data.converters.PickListEntityToPickListDtoConverter;
 import control.tower.inventory.service.core.data.dtos.PickListDto;
-import control.tower.inventory.service.core.data.entities.InventoryItemAssignedToPickListEntity;
-import control.tower.inventory.service.core.data.repositories.InventoryItemAssignedToPickListRepository;
+import control.tower.inventory.service.core.data.entities.PickItemEntity;
+import control.tower.inventory.service.core.data.repositories.PickItemRepository;
 import control.tower.inventory.service.core.data.entities.PickListEntity;
 import control.tower.inventory.service.core.data.repositories.PickListRepository;
 import control.tower.inventory.service.core.events.InventoryItemAddedToPickListEvent;
@@ -36,16 +36,16 @@ public class PickListEventsHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(PickListEventsHandler.class);
 
     private final PickListRepository pickListRepository;
-    private final InventoryItemAssignedToPickListRepository inventoryItemAssignedToPickListRepository;
+    private final PickItemRepository pickItemRepository;
     private final PickListDtoToPickListEntityConverter pickListDtoToPickListEntityConverter;
     private final PickListEntityToPickListDtoConverter pickListEntityToPickListDtoConverter;
 
     public PickListEventsHandler(PickListRepository pickListRepository,
-                                 InventoryItemAssignedToPickListRepository inventoryItemAssignedToPickListRepository,
+                                 PickItemRepository pickItemRepository,
                                  PickListDtoToPickListEntityConverter pickListDtoToPickListEntityConverter,
                                  PickListEntityToPickListDtoConverter pickListEntityToPickListDtoConverter) {
         this.pickListRepository = pickListRepository;
-        this.inventoryItemAssignedToPickListRepository = inventoryItemAssignedToPickListRepository;
+        this.pickItemRepository = pickItemRepository;
         this.pickListDtoToPickListEntityConverter = pickListDtoToPickListEntityConverter;
         this.pickListEntityToPickListDtoConverter = pickListEntityToPickListDtoConverter;
     }
@@ -78,7 +78,7 @@ public class PickListEventsHandler {
         PickListEntity pickListEntity = pickListDtoToPickListEntityConverter.convert(pickListDto);
 
         pickListRepository.save(pickListEntity);
-        inventoryItemAssignedToPickListRepository.saveAll(pickListEntity.getSkuList());
+        pickItemRepository.saveAll(pickListEntity.getSkuList());
     }
 
     @EventHandler
@@ -89,10 +89,10 @@ public class PickListEventsHandler {
 
         String sku = event.getSku();
 
-        InventoryItemAssignedToPickListEntity inventoryItemAssignedToPickListEntity =
-                inventoryItemAssignedToPickListRepository.findBySku(sku);
+        PickItemEntity pickItemEntity =
+                pickItemRepository.findBySku(sku);
 
-        throwExceptionIfEntityDoesExist(inventoryItemAssignedToPickListEntity,
+        throwExceptionIfEntityDoesExist(pickItemEntity,
                 String.format(INVENTORY_ITEM_ASSIGNED_TO_PICK_LIST_ENTITY_WITH_ID_ALREADY_EXISTS, sku));
 
         PickListDto pickListDto = pickListEntityToPickListDtoConverter.convert(pickListEntity);
@@ -102,8 +102,8 @@ public class PickListEventsHandler {
                     String.format(INVENTORY_ITEM_ALREADY_ASSIGNED_TO_PICK_LIST, sku, pickId));
         }
 
-        inventoryItemAssignedToPickListRepository.save(
-                new InventoryItemAssignedToPickListEntity(sku, pickListEntity, Boolean.FALSE));
+        pickItemRepository.save(
+                new PickItemEntity(sku, pickListEntity, Boolean.FALSE));
     }
 
     @EventHandler
@@ -114,10 +114,10 @@ public class PickListEventsHandler {
 
         String sku = event.getSku();
 
-        InventoryItemAssignedToPickListEntity inventoryItemAssignedToPickListEntity =
-                inventoryItemAssignedToPickListRepository.findBySku(sku);
+        PickItemEntity pickItemEntity =
+                pickItemRepository.findBySku(sku);
 
-        throwExceptionIfEntityDoesNotExist(inventoryItemAssignedToPickListEntity,
+        throwExceptionIfEntityDoesNotExist(pickItemEntity,
                 String.format(INVENTORY_ITEM_ASSIGNED_TO_PICK_LIST_ENTITY_WITH_ID_DOES_NOT_EXIST, sku));
 
         PickListDto pickListDto = pickListEntityToPickListDtoConverter.convert(pickListEntity);
@@ -126,8 +126,8 @@ public class PickListEventsHandler {
             throw new IllegalArgumentException(String.format(SKU_IS_NOT_IN_PICK_LIST, sku, pickId));
         }
 
-        inventoryItemAssignedToPickListEntity.setSkuPicked(true);
-        inventoryItemAssignedToPickListRepository.save(inventoryItemAssignedToPickListEntity);
+        pickItemEntity.setSkuPicked(true);
+        pickItemRepository.save(pickItemEntity);
     }
 
     @EventHandler
@@ -138,10 +138,10 @@ public class PickListEventsHandler {
 
         String sku = event.getSku();
 
-        InventoryItemAssignedToPickListEntity inventoryItemAssignedToPickListEntity =
-                inventoryItemAssignedToPickListRepository.findBySku(sku);
+        PickItemEntity pickItemEntity =
+                pickItemRepository.findBySku(sku);
 
-        throwExceptionIfEntityDoesNotExist(inventoryItemAssignedToPickListEntity,
+        throwExceptionIfEntityDoesNotExist(pickItemEntity,
                 String.format(INVENTORY_ITEM_ASSIGNED_TO_PICK_LIST_ENTITY_WITH_ID_DOES_NOT_EXIST, sku));
 
         PickListDto pickListDto = pickListEntityToPickListDtoConverter.convert(pickListEntity);
@@ -150,12 +150,12 @@ public class PickListEventsHandler {
             throw new IllegalArgumentException(String.format(SKU_IS_NOT_IN_PICK_LIST, sku, pickId));
         }
 
-        List<InventoryItemAssignedToPickListEntity> skuList = pickListEntity.getSkuList();
-        skuList.remove(inventoryItemAssignedToPickListEntity);
+        List<PickItemEntity> skuList = pickListEntity.getSkuList();
+        skuList.remove(pickItemEntity);
         pickListEntity.setSkuList(skuList);
 
         pickListRepository.save(pickListEntity);
-        inventoryItemAssignedToPickListRepository.delete(inventoryItemAssignedToPickListEntity);
+        pickItemRepository.delete(pickItemEntity);
     }
 
     @EventHandler

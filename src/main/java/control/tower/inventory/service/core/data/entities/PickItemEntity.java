@@ -15,11 +15,12 @@ import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "inventoryitemassignedtopicklistlookup")
-public class InventoryItemAssignedToPickListLookupEntity implements Serializable {
+@Table(name = "inventoryitemassignedtopicklist")
+public class PickItemEntity implements Serializable {
 
-    private static final long serialVersionUID = -4787108556148621736L;
+    private static final long serialVersionUID = -3787108556148621736L;
 
     @Id
     @Column(unique = true)
@@ -27,12 +28,7 @@ public class InventoryItemAssignedToPickListLookupEntity implements Serializable
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pick_id")
-    private PickListLookupEntity pickListLookup;
+    private PickListEntity pickList;
 
-    private boolean isSkuPicked = false;
-
-    public InventoryItemAssignedToPickListLookupEntity(String sku, PickListLookupEntity pickListLookup) {
-        this.sku = sku;
-        this.pickListLookup = pickListLookup;
-    }
+    private boolean isSkuPicked;
 }

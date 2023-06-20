@@ -2,7 +2,7 @@ package control.tower.inventory.service.command.interceptors;
 
 import control.tower.inventory.service.command.commands.RemoveInventoryItemFromPickListCommand;
 import control.tower.inventory.service.command.commands.RemovePickListCommand;
-import control.tower.inventory.service.core.data.entities.InventoryItemAssignedToPickListLookupEntity;
+import control.tower.inventory.service.core.data.entities.PickItemLookupEntity;
 import control.tower.inventory.service.core.data.entities.PickListLookupEntity;
 import control.tower.inventory.service.core.data.repositories.PickListLookupRepository;
 import org.axonframework.commandhandling.CommandMessage;
@@ -53,12 +53,12 @@ public class RemovePickListCommandInterceptor implements MessageDispatchIntercep
                 throwExceptionIfEntityDoesNotExist(pickListLookupEntity,
                         String.format(PICK_LIST_LOOKUP_ENTITY_WITH_ID_DOES_NOT_EXIST, pickId));
 
-                for (InventoryItemAssignedToPickListLookupEntity inventoryItemAssignedToPickListLookupEntity:
+                for (PickItemLookupEntity pickItemLookupEntity :
                 pickListLookupEntity.getSkuList()) {
                     RemoveInventoryItemFromPickListCommand removeInventoryItemFromPickListCommand =
                             RemoveInventoryItemFromPickListCommand.builder()
                                     .pickId(pickId)
-                                    .sku(inventoryItemAssignedToPickListLookupEntity.getSku())
+                                    .sku(pickItemLookupEntity.getSku())
                                     .build();
 
                     commandGateway.sendAndWait(removeInventoryItemFromPickListCommand);

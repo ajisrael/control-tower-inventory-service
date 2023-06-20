@@ -1,8 +1,8 @@
 package control.tower.inventory.service.command.interceptors;
 
 import control.tower.inventory.service.command.commands.CreatePickListCommand;
-import control.tower.inventory.service.core.data.entities.InventoryItemAssignedToPickListLookupEntity;
-import control.tower.inventory.service.core.data.repositories.InventoryItemAssignedToPickListLookupRepository;
+import control.tower.inventory.service.core.data.entities.PickItemLookupEntity;
+import control.tower.inventory.service.core.data.repositories.PickItemLookupRepository;
 import control.tower.inventory.service.core.data.entities.InventoryItemLookupEntity;
 import control.tower.inventory.service.core.data.repositories.InventoryItemLookupRepository;
 import control.tower.inventory.service.core.data.entities.PickListLookupEntity;
@@ -28,14 +28,14 @@ public class CreatePickListCommandInterceptor implements MessageDispatchIntercep
 
     private final InventoryItemLookupRepository inventoryItemLookupRepository;
     private final PickListLookupRepository pickListLookupRepository;
-    private final InventoryItemAssignedToPickListLookupRepository inventoryItemAssignedToPickListLookupRepository;
+    private final PickItemLookupRepository pickItemLookupRepository;
 
     public CreatePickListCommandInterceptor(InventoryItemLookupRepository inventoryItemLookupRepository,
                                             PickListLookupRepository pickListLookupRepository,
-                                            InventoryItemAssignedToPickListLookupRepository inventoryItemAssignedToPickListLookupRepository) {
+                                            PickItemLookupRepository pickItemLookupRepository) {
         this.inventoryItemLookupRepository = inventoryItemLookupRepository;
         this.pickListLookupRepository = pickListLookupRepository;
-        this.inventoryItemAssignedToPickListLookupRepository = inventoryItemAssignedToPickListLookupRepository;
+        this.pickItemLookupRepository = pickItemLookupRepository;
     }
 
     @Override
@@ -61,12 +61,12 @@ public class CreatePickListCommandInterceptor implements MessageDispatchIntercep
                     throwExceptionIfEntityDoesNotExist(inventoryItemLookupEntity,
                             String.format(INVENTORY_ITEM_WITH_ID_DOES_NOT_EXIST, sku));
 
-                    InventoryItemAssignedToPickListLookupEntity inventoryItemAssignedToPickListLookupEntity =
-                            inventoryItemAssignedToPickListLookupRepository.findBySku(sku);
+                    PickItemLookupEntity pickItemLookupEntity =
+                            pickItemLookupRepository.findBySku(sku);
 
-                    throwExceptionIfEntityDoesExist(inventoryItemAssignedToPickListLookupEntity,
+                    throwExceptionIfEntityDoesExist(pickItemLookupEntity,
                             String.format(INVENTORY_ITEM_IS_ASSIGNED_TO_DIFFERENT_PICK_LIST, sku,
-                                    inventoryItemAssignedToPickListLookupEntity.getPickListLookup().getPickId()));
+                                    pickItemLookupEntity.getPickListLookup().getPickId()));
                 }
             }
 

@@ -1,7 +1,7 @@
 package control.tower.inventory.service.command.interceptors;
 
 import control.tower.inventory.service.command.commands.CompletePickListCommand;
-import control.tower.inventory.service.core.data.entities.InventoryItemAssignedToPickListLookupEntity;
+import control.tower.inventory.service.core.data.entities.PickItemLookupEntity;
 import control.tower.inventory.service.core.data.entities.PickListLookupEntity;
 import control.tower.inventory.service.core.data.repositories.PickListLookupRepository;
 import org.axonframework.commandhandling.CommandMessage;
@@ -51,9 +51,9 @@ public class CompletePickListCommandInterceptor implements MessageDispatchInterc
 
                 boolean allSkusArePicked = true;
 
-                for(InventoryItemAssignedToPickListLookupEntity inventoryItemAssignedToPickListLookupEntity:
+                for(PickItemLookupEntity pickItemLookupEntity :
                         pickListLookupEntity.getSkuList()) {
-                    allSkusArePicked &= inventoryItemAssignedToPickListLookupEntity.isSkuPicked();
+                    allSkusArePicked &= pickItemLookupEntity.isSkuPicked();
                 }
 
                 if (!allSkusArePicked) {
