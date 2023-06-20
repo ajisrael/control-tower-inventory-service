@@ -36,6 +36,8 @@ public class ExceptionMessages {
             String.format(ENTITY_WITH_ID_ALREADY_EXISTS, INVENTORY_ITEM_ASSIGNED_TO_PICK_LIST_ENTITY, "%s");
     public static final String INVENTORY_ITEM_ASSIGNED_TO_PICK_LIST_ENTITY_WITH_ID_DOES_NOT_EXIST =
             String.format(ENTITY_WITH_ID_DOES_NOT_EXIST, INVENTORY_ITEM_ASSIGNED_TO_PICK_LIST_ENTITY, "%s");
+    public static final String INVENTORY_ITEM_HISTORY_WITH_ID_DOES_NOT_EXIST =
+            String.format(ENTITY_WITH_ID_DOES_NOT_EXIST, INVENTORY_ITEM_HISTORY, "%s");
 
     public static final String INVENTORY_ITEM_IS_ASSIGNED_TO_DIFFERENT_PICK_LIST =
             "Inventory item %s is assigned to different pick list %s";
