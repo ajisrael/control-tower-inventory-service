@@ -45,7 +45,6 @@ public class RemoveInventoryItemFromPickListCommandInterceptor implements Messag
 
                 removeInventoryItemFromPickListCommand.validate();
 
-                String pickId = removeInventoryItemFromPickListCommand.getPickId();
                 String sku = removeInventoryItemFromPickListCommand.getSku();
 
                 if (!removeInventoryItemFromPickListCommand.isIgnoreInventoryItemValidation()) {
@@ -54,6 +53,8 @@ public class RemoveInventoryItemFromPickListCommandInterceptor implements Messag
                     throwExceptionIfEntityDoesNotExist(inventoryItemLookupEntity,
                             String.format(INVENTORY_ITEM_WITH_ID_DOES_NOT_EXIST, sku));
                 }
+
+                String pickId = removeInventoryItemFromPickListCommand.getPickId();
 
                 PickListLookupEntity pickListLookupEntity = pickListLookupRepository.findByPickId(pickId);
 

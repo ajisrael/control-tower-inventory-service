@@ -44,13 +44,14 @@ public class PickInventoryItemCommandInterceptor implements MessageDispatchInter
 
                 pickInventoryItemCommand.validate();
 
-                String pickId = pickInventoryItemCommand.getPickId();
                 String sku = pickInventoryItemCommand.getSku();
 
                 InventoryItemLookupEntity inventoryItemLookupEntity = inventoryItemLookupRepository.findBySku(sku);
 
                 throwExceptionIfEntityDoesNotExist(inventoryItemLookupEntity,
                         String.format(INVENTORY_ITEM_WITH_ID_DOES_NOT_EXIST, sku));
+
+                String pickId = pickInventoryItemCommand.getPickId();
 
                 PickListLookupEntity pickListLookupEntity = pickListLookupRepository.findByPickId(pickId);
 

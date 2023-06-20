@@ -51,13 +51,14 @@ public class AddInventoryItemToPickListCommandInterceptor implements MessageDisp
 
                 addInventoryItemToPickListCommand.validate();
 
-                String pickId = addInventoryItemToPickListCommand.getPickId();
                 String sku = addInventoryItemToPickListCommand.getSku();
 
                 InventoryItemLookupEntity inventoryItemLookupEntity = inventoryItemLookupRepository.findBySku(sku);
 
                 throwExceptionIfEntityDoesNotExist(inventoryItemLookupEntity,
                         String.format(INVENTORY_ITEM_WITH_ID_DOES_NOT_EXIST, sku));
+
+                String pickId = addInventoryItemToPickListCommand.getPickId();
 
                 PickListLookupEntity pickListLookupEntity = pickListLookupRepository.findByPickId(pickId);
 

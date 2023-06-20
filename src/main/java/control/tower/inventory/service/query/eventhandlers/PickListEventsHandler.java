@@ -85,10 +85,7 @@ public class PickListEventsHandler {
     public void on(InventoryItemAddedToPickListEvent event) {
         String pickId = event.getPickId();
 
-        PickListEntity pickListEntity = pickListRepository.findByPickId(pickId);
-
-        throwExceptionIfEntityDoesNotExist(pickListEntity,
-                String.format(PICK_LIST_ENTITY_WITH_ID_DOES_NOT_EXIST, pickId));
+        PickListEntity pickListEntity = findPickListEntityAndThrowExceptionIfItDoesNotExist(pickId);
 
         String sku = event.getSku();
 
@@ -113,10 +110,7 @@ public class PickListEventsHandler {
     public void on(InventoryItemPickedEvent event) {
         String pickId = event.getPickId();
 
-        PickListEntity pickListEntity = pickListRepository.findByPickId(pickId);
-
-        throwExceptionIfEntityDoesNotExist(pickListEntity,
-                String.format(PICK_LIST_ENTITY_WITH_ID_DOES_NOT_EXIST, pickId));
+        PickListEntity pickListEntity = findPickListEntityAndThrowExceptionIfItDoesNotExist(pickId);
 
         String sku = event.getSku();
 
@@ -140,10 +134,7 @@ public class PickListEventsHandler {
     public void on(InventoryItemRemovedFromPickListEvent event) {
         String pickId = event.getPickId();
 
-        PickListEntity pickListEntity = pickListRepository.findByPickId(pickId);
-
-        throwExceptionIfEntityDoesNotExist(pickListEntity,
-                String.format(PICK_LIST_ENTITY_WITH_ID_DOES_NOT_EXIST, pickId));
+        PickListEntity pickListEntity = findPickListEntityAndThrowExceptionIfItDoesNotExist(pickId);
 
         String sku = event.getSku();
 
@@ -169,10 +160,7 @@ public class PickListEventsHandler {
 
     @EventHandler
     public void on(PickListDateUpdatedEvent event) {
-        PickListEntity pickListEntity = pickListRepository.findByPickId(event.getPickId());
-
-        throwExceptionIfEntityDoesNotExist(pickListEntity,
-                String.format(PICK_LIST_ENTITY_WITH_ID_DOES_NOT_EXIST, event.getPickId()));
+        PickListEntity pickListEntity = findPickListEntityAndThrowExceptionIfItDoesNotExist(event.getPickId());
 
         pickListEntity.setPickByDate(event.getPickByDate());
 
@@ -181,10 +169,7 @@ public class PickListEventsHandler {
 
     @EventHandler
     public void on(PickListCompletedEvent event) {
-        PickListEntity pickListEntity = pickListRepository.findByPickId(event.getPickId());
-
-        throwExceptionIfEntityDoesNotExist(pickListEntity,
-                String.format(PICK_LIST_ENTITY_WITH_ID_DOES_NOT_EXIST, event.getPickId()));
+        PickListEntity pickListEntity = findPickListEntityAndThrowExceptionIfItDoesNotExist(event.getPickId());
 
         pickListEntity.setComplete(true);
 
@@ -193,11 +178,17 @@ public class PickListEventsHandler {
 
     @EventHandler
     public void on(PickListRemovedEvent event) {
-        PickListEntity pickListEntity = pickListRepository.findByPickId(event.getPickId());
-
-        throwExceptionIfEntityDoesNotExist(pickListEntity,
-                String.format(PICK_LIST_ENTITY_WITH_ID_DOES_NOT_EXIST, event.getPickId()));
+        PickListEntity pickListEntity = findPickListEntityAndThrowExceptionIfItDoesNotExist(event.getPickId());
 
         pickListRepository.delete(pickListEntity);
+    }
+
+    private PickListEntity findPickListEntityAndThrowExceptionIfItDoesNotExist(String pickId) {
+        PickListEntity pickListEntity = pickListRepository.findByPickId(pickId);
+
+        throwExceptionIfEntityDoesNotExist(pickListEntity,
+                String.format(PICK_LIST_ENTITY_WITH_ID_DOES_NOT_EXIST, pickId));
+
+        return pickListEntity;
     }
 }

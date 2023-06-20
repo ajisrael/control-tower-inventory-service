@@ -38,9 +38,7 @@ public class PickListLookupEventsHandler {
         List<InventoryItemAssignedToPickListLookupEntity> skuList = new ArrayList<>();
 
         for (String sku : event.getSkuList()) {
-            InventoryItemAssignedToPickListLookupEntity inventoryItemAssignedToPickListLookupEntity =
-                    new InventoryItemAssignedToPickListLookupEntity(sku, pickListLookupEntity);
-            skuList.add(inventoryItemAssignedToPickListLookupEntity);
+            skuList.add(new InventoryItemAssignedToPickListLookupEntity(sku, pickListLookupEntity));
         }
 
         pickListLookupEntity.setSkuList(skuList);
@@ -51,10 +49,7 @@ public class PickListLookupEventsHandler {
 
     @EventHandler
     public void on(InventoryItemAddedToPickListEvent event) {
-        PickListLookupEntity pickListLookupEntity = pickListLookupRepository.findByPickId(event.getPickId());
-
-        throwExceptionIfEntityDoesNotExist(pickListLookupEntity,
-                String.format(PICK_LIST_LOOKUP_ENTITY_WITH_ID_DOES_NOT_EXIST, event.getPickId()));
+        PickListLookupEntity pickListLookupEntity = findPickListLookupEntityAndThrowExceptionIfItDoesNotExist(event.getPickId());
 
         InventoryItemAssignedToPickListLookupEntity inventoryItemAssignedToPickListLookupEntity =
                 new InventoryItemAssignedToPickListLookupEntity(event.getSku(), pickListLookupEntity);
@@ -69,23 +64,19 @@ public class PickListLookupEventsHandler {
 
     @EventHandler
     public void on(InventoryItemPickedEvent event) {
-        PickListLookupEntity pickListLookupEntity = pickListLookupRepository.findByPickId(event.getPickId());
+        String pickId = event.getPickId();
 
-        throwExceptionIfEntityDoesNotExist(pickListLookupEntity,
-                String.format(PICK_LIST_LOOKUP_ENTITY_WITH_ID_DOES_NOT_EXIST, event.getPickId()));
+        throwExceptionIfEntityDoesNotExist(pickListLookupRepository.findByPickId(pickId),
+                String.format(PICK_LIST_LOOKUP_ENTITY_WITH_ID_DOES_NOT_EXIST, pickId));
+
+        String sku = event.getSku();
 
         InventoryItemAssignedToPickListLookupEntity inventoryItemAssignedToPickListLookupEntity =
-                inventoryItemAssignedToPickListLookupRepository.findBySku(event.getSku());
-
-        throwExceptionIfEntityDoesNotExist(inventoryItemAssignedToPickListLookupEntity,
-                String.format(INVENTORY_ITEM_ASSIGNED_TO_PICK_LIST_LOOKUP_ENTITY_WITH_ID_DOES_NOT_EXIST, event.getSku()));
+                findInventoryItemAssignedToPickListLookupEntityAndThrowExceptionIfItDoesNotExist(sku);
 
         String assignedPickId = inventoryItemAssignedToPickListLookupEntity.getPickListLookup().getPickId();
 
-        if (!assignedPickId.equals(event.getPickId())) {
-            throw new IllegalArgumentException(
-                    String.format(INVENTORY_ITEM_IS_ASSIGNED_TO_DIFFERENT_PICK_LIST, event.getSku(), assignedPickId));
-        }
+        throwExceptionIfInventoryItemIsAssignedToDifferentPickId(assignedPickId, pickId, sku);
 
         inventoryItemAssignedToPickListLookupEntity.setSkuPicked(true);
 
@@ -94,23 +85,18 @@ public class PickListLookupEventsHandler {
 
     @EventHandler
     public void on(InventoryItemRemovedFromPickListEvent event) {
-        PickListLookupEntity pickListLookupEntity = pickListLookupRepository.findByPickId(event.getPickId());
+        String pickId = event.getPickId();
 
-        throwExceptionIfEntityDoesNotExist(pickListLookupEntity,
-                String.format(PICK_LIST_LOOKUP_ENTITY_WITH_ID_DOES_NOT_EXIST, event.getPickId()));
+        PickListLookupEntity pickListLookupEntity = findPickListLookupEntityAndThrowExceptionIfItDoesNotExist(pickId);
+
+        String sku = event.getSku();
 
         InventoryItemAssignedToPickListLookupEntity inventoryItemAssignedToPickListLookupEntity =
-                inventoryItemAssignedToPickListLookupRepository.findBySku(event.getSku());
-
-        throwExceptionIfEntityDoesNotExist(inventoryItemAssignedToPickListLookupEntity,
-                String.format(INVENTORY_ITEM_ASSIGNED_TO_PICK_LIST_LOOKUP_ENTITY_WITH_ID_DOES_NOT_EXIST, event.getSku()));
+                findInventoryItemAssignedToPickListLookupEntityAndThrowExceptionIfItDoesNotExist(sku);
 
         String assignedPickId = inventoryItemAssignedToPickListLookupEntity.getPickListLookup().getPickId();
 
-        if (!assignedPickId.equals(event.getPickId())) {
-            throw new IllegalArgumentException(
-                    String.format(INVENTORY_ITEM_IS_ASSIGNED_TO_DIFFERENT_PICK_LIST, event.getSku(), assignedPickId));
-        }
+        throwExceptionIfInventoryItemIsAssignedToDifferentPickId(assignedPickId, pickId, sku);
 
         List<InventoryItemAssignedToPickListLookupEntity> skuList = pickListLookupEntity.getSkuList();
         skuList.remove(inventoryItemAssignedToPickListLookupEntity);
@@ -122,11 +108,34 @@ public class PickListLookupEventsHandler {
 
     @EventHandler
     public void on(PickListRemovedEvent event) {
-        PickListLookupEntity pickListLookupEntity = pickListLookupRepository.findByPickId(event.getPickId());
-
-        throwExceptionIfEntityDoesNotExist(pickListLookupEntity,
-                String.format(PICK_LIST_LOOKUP_ENTITY_WITH_ID_DOES_NOT_EXIST, event.getPickId()));
+        PickListLookupEntity pickListLookupEntity = findPickListLookupEntityAndThrowExceptionIfItDoesNotExist(event.getPickId());
 
         pickListLookupRepository.delete(pickListLookupEntity);
+    }
+
+    private PickListLookupEntity findPickListLookupEntityAndThrowExceptionIfItDoesNotExist(String pickId) {
+        PickListLookupEntity pickListLookupEntity = pickListLookupRepository.findByPickId(pickId);
+
+        throwExceptionIfEntityDoesNotExist(pickListLookupEntity,
+                String.format(PICK_LIST_LOOKUP_ENTITY_WITH_ID_DOES_NOT_EXIST, pickId));
+
+        return pickListLookupEntity;
+    }
+
+    private InventoryItemAssignedToPickListLookupEntity findInventoryItemAssignedToPickListLookupEntityAndThrowExceptionIfItDoesNotExist(String sku) {
+        InventoryItemAssignedToPickListLookupEntity inventoryItemAssignedToPickListLookupEntity =
+                inventoryItemAssignedToPickListLookupRepository.findBySku(sku);
+
+        throwExceptionIfEntityDoesNotExist(inventoryItemAssignedToPickListLookupEntity,
+                String.format(INVENTORY_ITEM_ASSIGNED_TO_PICK_LIST_LOOKUP_ENTITY_WITH_ID_DOES_NOT_EXIST, sku));
+
+        return inventoryItemAssignedToPickListLookupEntity;
+    }
+
+    private void throwExceptionIfInventoryItemIsAssignedToDifferentPickId(String assignedPickId, String eventPickId, String sku) {
+        if (!assignedPickId.equals(eventPickId)) {
+            throw new IllegalArgumentException(
+                    String.format(INVENTORY_ITEM_IS_ASSIGNED_TO_DIFFERENT_PICK_LIST, sku, assignedPickId));
+        }
     }
 }

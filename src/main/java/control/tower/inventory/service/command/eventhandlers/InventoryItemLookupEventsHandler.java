@@ -27,7 +27,10 @@ public class InventoryItemLookupEventsHandler {
     @EventHandler
     public void on(InventoryItemRemovedEvent event) {
         InventoryItemLookupEntity inventoryItemLookupEntity = inventoryItemLookupRepository.findBySku(event.getSku());
-        throwExceptionIfEntityDoesNotExist(inventoryItemLookupEntity, String.format(INVENTORY_ITEM_LOOKUP_ENTITY_WITH_ID_DOES_NOT_EXIST, event.getSku()));
+
+        throwExceptionIfEntityDoesNotExist(inventoryItemLookupEntity,
+                String.format(INVENTORY_ITEM_LOOKUP_ENTITY_WITH_ID_DOES_NOT_EXIST, event.getSku()));
+
         inventoryItemLookupRepository.delete(inventoryItemLookupEntity);
     }
 }
