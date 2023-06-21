@@ -3,7 +3,7 @@ package control.tower.inventory.service.query.rest;
 import control.tower.inventory.service.core.data.entities.InventoryItemEntity;
 import control.tower.inventory.service.query.queries.FindAllInventoryItemsQuery;
 import control.tower.inventory.service.query.queries.FindInventoryItemQuery;
-import control.tower.inventory.service.query.rest.model.InventoryItemRestModel;
+import control.tower.inventory.service.query.querymodels.InventoryItemQueryModel;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,38 +22,14 @@ public class InventoryItemsQueryController {
     QueryGateway queryGateway;
 
     @GetMapping
-    public List<InventoryItemRestModel> getInventoryItems() {
-        List<InventoryItemEntity> inventoryItemEntities = queryGateway.query(new FindAllInventoryItemsQuery(),
-                ResponseTypes.multipleInstancesOf(InventoryItemEntity.class)).join();
-
-        return convertInventoryItemEntitiesToInventoryItemRestModels(inventoryItemEntities);
+    public List<InventoryItemQueryModel> getInventoryItems() {
+        return queryGateway.query(new FindAllInventoryItemsQuery(),
+                ResponseTypes.multipleInstancesOf(InventoryItemQueryModel.class)).join();
     }
 
     @GetMapping(params = "sku")
-    public InventoryItemRestModel getInventoryItem(String sku) {
-        InventoryItemEntity inventoryItemEntity = queryGateway.query(new FindInventoryItemQuery(sku),
-                ResponseTypes.instanceOf(InventoryItemEntity.class)).join();
-
-        return convertInventoryItemEntityToInventoryItemRestModel(inventoryItemEntity);
-    }
-
-    private List<InventoryItemRestModel> convertInventoryItemEntitiesToInventoryItemRestModels(
-            List<InventoryItemEntity> inventoryItemEntities) {
-        List<InventoryItemRestModel> inventoryItemRestModels = new ArrayList<>();
-
-        for (InventoryItemEntity inventoryItemEntity: inventoryItemEntities) {
-            inventoryItemRestModels.add(convertInventoryItemEntityToInventoryItemRestModel(inventoryItemEntity));
-        }
-
-        return inventoryItemRestModels;
-    }
-
-    private InventoryItemRestModel convertInventoryItemEntityToInventoryItemRestModel(InventoryItemEntity inventoryItemEntity) {
-        return new InventoryItemRestModel(
-                inventoryItemEntity.getSku(),
-                inventoryItemEntity.getProductId(),
-                inventoryItemEntity.getLocationId(),
-                inventoryItemEntity.getBinId()
-        );
+    public InventoryItemQueryModel getInventoryItem(String sku) {
+        return queryGateway.query(new FindInventoryItemQuery(sku),
+                ResponseTypes.instanceOf(InventoryItemQueryModel.class)).join();
     }
 }

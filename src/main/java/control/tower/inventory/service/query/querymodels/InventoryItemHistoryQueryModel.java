@@ -1,14 +1,12 @@
-package control.tower.inventory.service.query.rest.model;
+package control.tower.inventory.service.query.querymodels;
 
 import control.tower.inventory.service.core.data.entities.LocationHistoryEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.List;
-
 @Getter
 @AllArgsConstructor
-public class InventoryItemHistoryRestModel {
+public class InventoryItemHistoryQueryModel {
 
     private String sku;
     private LocationHistoryEntity locationHistory;
