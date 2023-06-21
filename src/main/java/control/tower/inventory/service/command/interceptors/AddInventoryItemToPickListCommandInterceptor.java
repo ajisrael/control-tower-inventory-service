@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.function.BiFunction;
 
 import static control.tower.core.constants.LogMessages.INTERCEPTED_COMMAND;
-import static control.tower.core.utils.Helper.throwExceptionIfEntityDoesExist;
 import static control.tower.core.utils.Helper.throwExceptionIfEntityDoesNotExist;
 import static control.tower.inventory.service.core.constants.ExceptionMessages.*;
 
