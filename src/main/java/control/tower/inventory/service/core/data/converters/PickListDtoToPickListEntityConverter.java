@@ -15,7 +15,7 @@ public class PickListDtoToPickListEntityConverter {
         PickListEntity pickListEntity = new PickListEntity();
         pickListEntity.setPickId(pickListDto.getPickId());
         pickListEntity.setPickByDate(pickListDto.getPickByDate());
-        pickListEntity.setComplete(pickListDto.isPicked());
+        pickListEntity.setComplete(pickListDto.isComplete());
 
         List<PickItemEntity> skuList = new ArrayList<>();
 

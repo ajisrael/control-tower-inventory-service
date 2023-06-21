@@ -1,17 +1,18 @@
 package control.tower.inventory.service.query.rest.model;
 
+import control.tower.inventory.service.query.querymodels.PickItemQueryModel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.Date;
-import java.util.Map;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
 public class PickListRestModel {
 
     private String pickId;
-    private Map<String, Boolean> skuMap;
+    private List<PickItemRestModel> pickItems;
     private Date pickByDate;
-    private boolean isPicked;
+    private boolean isComplete;
 }

@@ -10,13 +10,13 @@ public class PickListDto {
     private String pickId;
     private Map<String, Boolean> skuMap;
     private Date pickByDate;
-    private boolean isPicked;
+    private boolean isComplete;
 
-    public PickListDto(String pickId, Map<String, Boolean> skuMap, Date pickByDate, boolean isPicked) {
+    public PickListDto(String pickId, Map<String, Boolean> skuMap, Date pickByDate, boolean isComplete) {
         this.pickId = pickId;
         this.skuMap = skuMap;
         this.pickByDate = pickByDate;
-        this.isPicked = isPicked;
+        this.isComplete = isComplete;
     }
 }
 
