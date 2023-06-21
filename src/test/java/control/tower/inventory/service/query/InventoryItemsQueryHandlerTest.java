@@ -5,6 +5,7 @@ import control.tower.inventory.service.core.data.repositories.InventoryItemRepos
 import control.tower.inventory.service.query.queryhandlers.InventoryItemsQueryHandler;
 import control.tower.inventory.service.query.queries.FindAllInventoryItemsQuery;
 import control.tower.inventory.service.query.queries.FindInventoryItemQuery;
+import control.tower.inventory.service.query.querymodels.InventoryItemQueryModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -38,6 +39,13 @@ class InventoryItemsQueryHandlerTest {
         inventoryItemEntity.setBinId(binId);
     }
 
+    private void compareInventoryItemEntityWithInventoryItemQueryModel(InventoryItemEntity inventoryItemEntity, InventoryItemQueryModel inventoryItemQueryModel) {
+        assertEquals(inventoryItemEntity.getSku(), inventoryItemQueryModel.getSku());
+        assertEquals(inventoryItemEntity.getProductId(), inventoryItemQueryModel.getProductId());
+        assertEquals(inventoryItemEntity.getLocationId(), inventoryItemQueryModel.getLocationId());
+        assertEquals(inventoryItemEntity.getBinId(), inventoryItemQueryModel.getBinId());
+    }
+
     @Test
     void shouldHandleFindAllInventoryItemsQueryAndReturnAllInventoryItems() {
         // Arrange
@@ -56,12 +64,12 @@ class InventoryItemsQueryHandlerTest {
         FindAllInventoryItemsQuery query = new FindAllInventoryItemsQuery();
 
         // Act
-        List<InventoryItemEntity> result = queryHandler.findAllInventoryItems(query);
+        List<InventoryItemQueryModel> result = queryHandler.findAllInventoryItems(query);
 
         // Assert
         assertEquals(inventoryItemEntities.size(), result.size());
-        assertEquals(inventoryItemEntities.get(0), result.get(0));
-        assertEquals(inventoryItemEntities.get(1), result.get(1));
+        compareInventoryItemEntityWithInventoryItemQueryModel(inventoryItemEntities.get(0), result.get(0));
+        compareInventoryItemEntityWithInventoryItemQueryModel(inventoryItemEntities.get(1), result.get(1));
     }
 
     @Test
@@ -75,10 +83,10 @@ class InventoryItemsQueryHandlerTest {
         FindInventoryItemQuery query = new FindInventoryItemQuery(inventoryItemEntity.getSku());
 
         // Act
-        InventoryItemEntity result = queryHandler.findInventoryItem(query);
+        InventoryItemQueryModel result = queryHandler.findInventoryItem(query);
 
         // Assert
-        assertEquals(inventoryItemEntity, result);
+        compareInventoryItemEntityWithInventoryItemQueryModel(inventoryItemEntity, result);
     }
 
     @Test

@@ -1,15 +1,14 @@
-package control.tower.inventory.service.query.rest.model;
+package control.tower.inventory.service.query.querymodels;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class PickItemRestModel {
+public class InventoryItemQueryModel {
 
     private String sku;
     private String productId;
     private String locationId;
     private String binId;
-    private boolean picked;
 }
