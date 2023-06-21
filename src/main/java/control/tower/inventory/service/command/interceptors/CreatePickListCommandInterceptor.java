@@ -61,12 +61,12 @@ public class CreatePickListCommandInterceptor implements MessageDispatchIntercep
                     throwExceptionIfEntityDoesNotExist(inventoryItemLookupEntity,
                             String.format(INVENTORY_ITEM_WITH_ID_DOES_NOT_EXIST, sku));
 
-                    PickItemLookupEntity pickItemLookupEntity =
-                            pickItemLookupRepository.findBySku(sku);
+                    PickItemLookupEntity pickItemLookupEntity = pickItemLookupRepository.findBySku(sku);
 
-                    throwExceptionIfEntityDoesExist(pickItemLookupEntity,
-                            String.format(INVENTORY_ITEM_IS_ASSIGNED_TO_DIFFERENT_PICK_LIST, sku,
-                                    pickItemLookupEntity.getPickListLookup().getPickId()));
+                    if (pickItemLookupEntity != null) {
+                        throw new IllegalArgumentException(String.format(INVENTORY_ITEM_IS_ASSIGNED_TO_DIFFERENT_PICK_LIST,
+                                sku, pickItemLookupEntity.getPickListLookup().getPickId()));
+                    }
                 }
             }
 

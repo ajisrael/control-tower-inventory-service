@@ -73,9 +73,10 @@ public class AddInventoryItemToPickListCommandInterceptor implements MessageDisp
                 PickItemLookupEntity pickItemLookupEntity =
                         pickItemLookupRepository.findBySku(sku);
 
-                throwExceptionIfEntityDoesExist(pickItemLookupEntity,
-                        String.format(INVENTORY_ITEM_IS_ASSIGNED_TO_DIFFERENT_PICK_LIST, sku,
-                                pickItemLookupEntity.getPickListLookup().getPickId()));
+                if (pickItemLookupEntity != null) {
+                    throw new IllegalArgumentException(String.format(INVENTORY_ITEM_IS_ASSIGNED_TO_DIFFERENT_PICK_LIST,
+                            sku, pickItemLookupEntity.getPickListLookup().getPickId()));
+                }
             }
 
             return command;
