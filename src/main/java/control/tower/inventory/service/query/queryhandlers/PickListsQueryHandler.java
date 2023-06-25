@@ -3,7 +3,6 @@ package control.tower.inventory.service.query.queryhandlers;
 import control.tower.inventory.service.core.data.converters.PickListEntityToPickListDtoConverter;
 import control.tower.inventory.service.core.data.dtos.PickListDto;
 import control.tower.inventory.service.core.data.entities.InventoryItemEntity;
-import control.tower.inventory.service.core.data.entities.PickItemEntity;
 import control.tower.inventory.service.core.data.entities.PickListEntity;
 import control.tower.inventory.service.core.data.repositories.InventoryItemRepository;
 import control.tower.inventory.service.core.data.repositories.PickListRepository;
