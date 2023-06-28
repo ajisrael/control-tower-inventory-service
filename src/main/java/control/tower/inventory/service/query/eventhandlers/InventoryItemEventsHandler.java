@@ -49,7 +49,8 @@ public class InventoryItemEventsHandler {
     public void on(InventoryItemMovedEvent event) {
         InventoryItemEntity inventoryItemEntity = inventoryItemRepository.findBySku(event.getSku());
 
-        throwExceptionIfEntityDoesNotExist(inventoryItemEntity, String.format(INVENTORY_ITEM_WITH_ID_DOES_NOT_EXIST, event.getSku()));
+        throwExceptionIfEntityDoesNotExist(inventoryItemEntity,
+                String.format(INVENTORY_ITEM_WITH_ID_DOES_NOT_EXIST, event.getSku()));
 
         inventoryItemEntity.setLocationId(event.getLocationId());
         inventoryItemEntity.setBinId(event.getBinId());
@@ -60,7 +61,8 @@ public class InventoryItemEventsHandler {
     @EventHandler
     public void on(InventoryItemRemovedEvent event) {
         InventoryItemEntity inventoryItemEntity = inventoryItemRepository.findBySku(event.getSku());
-        throwExceptionIfEntityDoesNotExist(inventoryItemEntity, String.format(INVENTORY_ITEM_WITH_ID_DOES_NOT_EXIST, event.getSku()));
+        throwExceptionIfEntityDoesNotExist(inventoryItemEntity,
+                String.format(INVENTORY_ITEM_WITH_ID_DOES_NOT_EXIST, event.getSku()));
         inventoryItemRepository.delete(inventoryItemEntity);
     }
 }
