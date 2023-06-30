@@ -1,3 +1,9 @@
 package control.tower.inventory.service.query.queries;
 
-public class FindAllInventoryItemHistoriesQuery {}
+import control.tower.core.query.queries.PageableQuery;
+import lombok.Getter;
+import lombok.experimental.SuperBuilder;
+
+@Getter
+@SuperBuilder
+public class FindAllInventoryItemHistoriesQuery extends PageableQuery {}

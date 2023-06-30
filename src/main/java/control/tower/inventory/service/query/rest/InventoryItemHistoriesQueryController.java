@@ -1,5 +1,8 @@
 package control.tower.inventory.service.query.rest;
 
+import control.tower.core.rest.PageResponseType;
+import control.tower.core.rest.PaginationResponse;
+import control.tower.core.utils.PaginationUtility;
 import control.tower.inventory.service.core.data.entities.InventoryItemHistoryEntity;
 import control.tower.inventory.service.query.queries.FindAllInventoryItemHistoriesQuery;
 import control.tower.inventory.service.query.queries.FindInventoryItemHistoryQuery;
@@ -14,6 +17,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+import static control.tower.core.constants.DomainConstants.DEFAULT_PAGE;
+import static control.tower.core.constants.DomainConstants.DEFAULT_PAGE_SIZE;
 
 @RestController
 @RequestMapping("/inventoryHistory")
@@ -27,9 +34,16 @@ public class InventoryItemHistoriesQueryController {
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get all inventory item histories")
-    public List<InventoryItemHistoryQueryModel> getInventoryItemHistories() {
-        return queryGateway.query(new FindAllInventoryItemHistoriesQuery(),
-                ResponseTypes.multipleInstancesOf(InventoryItemHistoryQueryModel.class)).join();
+    public CompletableFuture<PaginationResponse<InventoryItemHistoryQueryModel>> getInventoryItemHistories(
+            @RequestParam(defaultValue = DEFAULT_PAGE) int currentPage,
+            @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int pageSize) {
+        FindAllInventoryItemHistoriesQuery findAllInventoryItemHistoriesQuery = FindAllInventoryItemHistoriesQuery.builder()
+                .pageable(PaginationUtility.buildPageable(currentPage, pageSize))
+                .build();
+
+        return queryGateway.query(findAllInventoryItemHistoriesQuery,
+                new PageResponseType<>(InventoryItemHistoryQueryModel.class))
+                .thenApply(PaginationUtility::toPageResponse);
     }
 
     @GetMapping(params = "sku")
