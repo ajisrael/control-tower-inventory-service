@@ -59,9 +59,9 @@ public class InventoryItemsCommandController {
     @DeleteMapping(params = "sku")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Remove inventory item")
-    public void removeInventoryItem(String sku) {
+    public void removeInventoryItem(@Valid @RequestBody RemoveInventoryItemRestModel removeInventoryItemRestModel) {
         RemoveInventoryItemCommand removeInventoryItemCommand = RemoveInventoryItemCommand.builder()
-                .sku(sku)
+                .sku(removeInventoryItemRestModel.getSku())
                 .build();
 
         commandGateway.sendAndWait(removeInventoryItemCommand);
