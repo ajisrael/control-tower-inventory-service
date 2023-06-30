@@ -28,10 +28,8 @@ public class InventoryItemHistoriesQueryController {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get all inventory item histories")
     public List<InventoryItemHistoryQueryModel> getInventoryItemHistories() {
-        List<InventoryItemHistoryEntity> inventoryItemHistoryEntities = queryGateway.query(new FindAllInventoryItemHistoriesQuery(),
-                ResponseTypes.multipleInstancesOf(InventoryItemHistoryEntity.class)).join();
-
-        return convertInventoryItemHistoryEntitiesToInventoryItemHistoryRestModels(inventoryItemHistoryEntities);
+        return queryGateway.query(new FindAllInventoryItemHistoriesQuery(),
+                ResponseTypes.multipleInstancesOf(InventoryItemHistoryQueryModel.class)).join();
     }
 
     @GetMapping(params = "sku")
@@ -39,23 +37,8 @@ public class InventoryItemHistoriesQueryController {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get inventory item history for sku")
     public InventoryItemHistoryQueryModel getInventoryItemHistory(String sku) {
-        InventoryItemHistoryEntity inventoryItemHistoryEntity = queryGateway.query(new FindInventoryItemHistoryQuery(sku),
-                ResponseTypes.instanceOf(InventoryItemHistoryEntity.class)).join();
-
-        return convertInventoryItemHistoryEntityToInventoryItemRestModel(inventoryItemHistoryEntity);
+        return queryGateway.query(new FindInventoryItemHistoryQuery(sku),
+                ResponseTypes.instanceOf(InventoryItemHistoryQueryModel.class)).join();
     }
 
-    private List<InventoryItemHistoryQueryModel> convertInventoryItemHistoryEntitiesToInventoryItemHistoryRestModels(List<InventoryItemHistoryEntity> inventoryItemHistoryEntities) {
-        List<InventoryItemHistoryQueryModel> inventoryItemHistoryQueryModels = new ArrayList<>();
-
-        for (InventoryItemHistoryEntity inventoryItemHistoryEntity: inventoryItemHistoryEntities) {
-            inventoryItemHistoryQueryModels.add(convertInventoryItemHistoryEntityToInventoryItemRestModel(inventoryItemHistoryEntity));
-        }
-
-        return inventoryItemHistoryQueryModels;
-    }
-
-    private InventoryItemHistoryQueryModel convertInventoryItemHistoryEntityToInventoryItemRestModel(InventoryItemHistoryEntity inventoryItemHistoryEntity) {
-        return new InventoryItemHistoryQueryModel(inventoryItemHistoryEntity.getSku(), inventoryItemHistoryEntity.getLocationHistory());
-    }
 }
