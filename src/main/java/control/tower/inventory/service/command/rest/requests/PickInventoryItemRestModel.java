@@ -1,4 +1,4 @@
-package control.tower.inventory.service.command.rest.models;
+package control.tower.inventory.service.command.rest.requests;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
