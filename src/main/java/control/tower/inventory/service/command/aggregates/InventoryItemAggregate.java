@@ -39,14 +39,16 @@ public class InventoryItemAggregate {
 
     @CommandHandler
     public void handle(MoveInventoryItemCommand command) {
-        InventoryItemMovedEvent event = InventoryItemMovedEvent.builder()
-                .sku(command.getSku())
-                .productId(productId)
-                .locationId(command.getLocationId())
-                .binId(command.getBinId())
-                .build();
+        if (currentLocationIsDifferentFromRequestedLocation(command.getLocationId(), command.getBinId())) {
+            InventoryItemMovedEvent event = InventoryItemMovedEvent.builder()
+                    .sku(command.getSku())
+                    .productId(productId)
+                    .locationId(command.getLocationId())
+                    .binId(command.getBinId())
+                    .build();
 
-        AggregateLifecycle.apply(event);
+            AggregateLifecycle.apply(event);
+        }
     }
 
     @CommandHandler
@@ -77,5 +79,9 @@ public class InventoryItemAggregate {
     @EventSourcingHandler
     public void on(InventoryItemRemovedEvent event) {
         AggregateLifecycle.markDeleted();
+    }
+
+    private boolean currentLocationIsDifferentFromRequestedLocation(String newLocationId, String newBinId) {
+        return !locationId.equals(newLocationId) || !binId.equals(newBinId);
     }
 }
