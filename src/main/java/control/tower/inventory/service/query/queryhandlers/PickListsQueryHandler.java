@@ -12,6 +12,7 @@ import control.tower.inventory.service.query.querymodels.PickItemQueryModel;
 import control.tower.inventory.service.query.querymodels.PickListQueryModel;
 import lombok.AllArgsConstructor;
 import org.axonframework.queryhandling.QueryHandler;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -29,19 +30,10 @@ public class PickListsQueryHandler {
     private final InventoryItemRepository inventoryItemRepository;
 
     @QueryHandler
-    public List<PickListQueryModel> findAllPickLists(FindAllPickListsQuery query) {
-        List<PickListEntity> pickListEntities = pickListRepository.findAll();
-
-        List<PickListQueryModel> pickListQueryModels = new ArrayList<>();
-
-        for (PickListEntity pickListEntity: pickListEntities) {
-            pickListQueryModels.add(
-                    convertPickListDtoToPickListQueryModel(
-                            pickListEntityToPickListDtoConverter.convert(
-                                    pickListEntity)));
-        }
-
-        return pickListQueryModels;
+    public Page<PickListQueryModel> findAllPickLists(FindAllPickListsQuery query) {
+        return pickListRepository.findAll(query.getPageable())
+                .map(pickListEntityToPickListDtoConverter::convert)
+                .map(this::convertPickListDtoToPickListQueryModel);
     }
 
     @QueryHandler

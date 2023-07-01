@@ -50,9 +50,9 @@ public class InventoryItemHistoriesQueryController {
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get inventory item history for sku")
-    public InventoryItemHistoryQueryModel getInventoryItemHistory(String sku) {
+    public CompletableFuture<InventoryItemHistoryQueryModel> getInventoryItemHistory(String sku) {
         return queryGateway.query(new FindInventoryItemHistoryQuery(sku),
-                ResponseTypes.instanceOf(InventoryItemHistoryQueryModel.class)).join();
+                ResponseTypes.instanceOf(InventoryItemHistoryQueryModel.class));
     }
 
 }

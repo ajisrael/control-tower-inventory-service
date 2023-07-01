@@ -7,6 +7,7 @@ import control.tower.inventory.service.query.queries.FindInventoryItemQuery;
 import control.tower.inventory.service.query.querymodels.InventoryItemQueryModel;
 import lombok.AllArgsConstructor;
 import org.axonframework.queryhandling.QueryHandler;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -21,10 +22,9 @@ public class InventoryItemsQueryHandler {
     private final InventoryItemRepository inventoryItemRepository;
 
     @QueryHandler
-    public List<InventoryItemQueryModel> findAllInventoryItems(FindAllInventoryItemsQuery query) {
-        List<InventoryItemEntity> inventoryItemEntities = inventoryItemRepository.findAll();
-
-        return convertInventoryItemEntitiesToInventoryItemQueryModels(inventoryItemEntities);
+    public Page<InventoryItemQueryModel> findAllInventoryItems(FindAllInventoryItemsQuery query) {
+        return inventoryItemRepository.findAll(query.getPageable())
+                .map(this::convertInventoryItemEntityToInventoryItemQueryModel);
     }
 
     @QueryHandler
@@ -33,17 +33,6 @@ public class InventoryItemsQueryHandler {
                 () -> new IllegalArgumentException(String.format(INVENTORY_ITEM_WITH_ID_DOES_NOT_EXIST, query.getSku())));
 
         return convertInventoryItemEntityToInventoryItemQueryModel(inventoryItemEntity);
-    }
-
-    private List<InventoryItemQueryModel> convertInventoryItemEntitiesToInventoryItemQueryModels(
-            List<InventoryItemEntity> inventoryItemEntities) {
-        List<InventoryItemQueryModel> inventoryItemQueryModels = new ArrayList<>();
-
-        for (InventoryItemEntity inventoryItemEntity: inventoryItemEntities) {
-            inventoryItemQueryModels.add(convertInventoryItemEntityToInventoryItemQueryModel(inventoryItemEntity));
-        }
-
-        return inventoryItemQueryModels;
     }
 
     private InventoryItemQueryModel convertInventoryItemEntityToInventoryItemQueryModel(InventoryItemEntity inventoryItemEntity) {
