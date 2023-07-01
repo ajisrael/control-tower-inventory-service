@@ -7,10 +7,12 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @NoArgsConstructor
-public class AddInventoryItemToPickListRestModel {
+public class MoveInventoryItemRequestModel {
 
-    @NotBlank(message = "PickId is a required field")
-    private String pickId;
     @NotBlank(message = "Sku is a required field")
     private String sku;
+    @NotBlank(message = "LocationId is a required field")
+    private String locationId;
+    @NotBlank(message = "BinId is a required field")
+    private String binId;
 }

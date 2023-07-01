@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @NoArgsConstructor
-public class CreateInventoryItemRestModel {
+public class CreateInventoryItemRequestModel {
 
     @NotBlank(message = "ProductId is a required field")
     private String productId;

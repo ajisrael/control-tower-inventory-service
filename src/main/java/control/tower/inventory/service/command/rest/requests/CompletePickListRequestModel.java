@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @NoArgsConstructor
-public class RemovePickListRestModel {
+public class CompletePickListRequestModel {
 
     @NotBlank(message = "PickId is a required field")
     private String pickId;

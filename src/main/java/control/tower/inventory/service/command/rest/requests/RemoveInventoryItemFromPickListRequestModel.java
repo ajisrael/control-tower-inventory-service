@@ -7,8 +7,10 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @NoArgsConstructor
-public class RemoveInventoryItemRestModel {
+public class RemoveInventoryItemFromPickListRequestModel {
 
     @NotBlank(message = "Sku is a required field")
     private String sku;
+    @NotBlank(message = "PickId is a required field")
+    private String pickId;
 }

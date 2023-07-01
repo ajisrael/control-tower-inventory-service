@@ -7,7 +7,7 @@ import javax.validation.constraints.NotEmpty;
 
 @Getter
 @NoArgsConstructor
-public class PickInventoryItemRestModel {
+public class PickInventoryItemRequestModel {
 
     @NotEmpty(message = "Sku is a required field")
     private String sku;

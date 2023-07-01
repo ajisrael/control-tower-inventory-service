@@ -3,9 +3,9 @@ package control.tower.inventory.service.command.rest;
 import control.tower.inventory.service.command.commands.CreateInventoryItemCommand;
 import control.tower.inventory.service.command.commands.MoveInventoryItemCommand;
 import control.tower.inventory.service.command.commands.RemoveInventoryItemCommand;
-import control.tower.inventory.service.command.rest.requests.CreateInventoryItemRestModel;
-import control.tower.inventory.service.command.rest.requests.MoveInventoryItemRestModel;
-import control.tower.inventory.service.command.rest.requests.RemoveInventoryItemRestModel;
+import control.tower.inventory.service.command.rest.requests.CreateInventoryItemRequestModel;
+import control.tower.inventory.service.command.rest.requests.MoveInventoryItemRequestModel;
+import control.tower.inventory.service.command.rest.requests.RemoveInventoryItemRequestModel;
 import control.tower.inventory.service.command.rest.responses.InventoryItemCreatedResponseModel;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,12 +30,12 @@ public class InventoryItemsCommandController {
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create inventory item")
     public InventoryItemCreatedResponseModel createInventoryItem(
-            @Valid @RequestBody CreateInventoryItemRestModel createInventoryItemRestModel) {
+            @Valid @RequestBody CreateInventoryItemRequestModel createInventoryItemRequestModel) {
         CreateInventoryItemCommand createInventoryItemCommand = CreateInventoryItemCommand.builder()
                 .sku(UUID.randomUUID().toString())
-                .productId(createInventoryItemRestModel.getProductId())
-                .locationId(createInventoryItemRestModel.getLocationId())
-                .binId(createInventoryItemRestModel.getBinId())
+                .productId(createInventoryItemRequestModel.getProductId())
+                .locationId(createInventoryItemRequestModel.getLocationId())
+                .binId(createInventoryItemRequestModel.getBinId())
                 .build();
 
         String sku = commandGateway.sendAndWait(createInventoryItemCommand);
@@ -46,11 +46,11 @@ public class InventoryItemsCommandController {
     @PutMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Move inventory item")
-    public void moveInventoryItem(@Valid @RequestBody MoveInventoryItemRestModel moveInventoryItemRestModel) {
+    public void moveInventoryItem(@Valid @RequestBody MoveInventoryItemRequestModel moveInventoryItemRequestModel) {
         MoveInventoryItemCommand moveInventoryItemCommand = MoveInventoryItemCommand.builder()
-                .sku(moveInventoryItemRestModel.getSku())
-                .locationId(moveInventoryItemRestModel.getLocationId())
-                .binId(moveInventoryItemRestModel.getBinId())
+                .sku(moveInventoryItemRequestModel.getSku())
+                .locationId(moveInventoryItemRequestModel.getLocationId())
+                .binId(moveInventoryItemRequestModel.getBinId())
                 .build();
 
         commandGateway.sendAndWait(moveInventoryItemCommand);
@@ -59,9 +59,9 @@ public class InventoryItemsCommandController {
     @DeleteMapping(params = "sku")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Remove inventory item")
-    public void removeInventoryItem(@Valid @RequestBody RemoveInventoryItemRestModel removeInventoryItemRestModel) {
+    public void removeInventoryItem(@Valid @RequestBody RemoveInventoryItemRequestModel removeInventoryItemRequestModel) {
         RemoveInventoryItemCommand removeInventoryItemCommand = RemoveInventoryItemCommand.builder()
-                .sku(removeInventoryItemRestModel.getSku())
+                .sku(removeInventoryItemRequestModel.getSku())
                 .build();
 
         commandGateway.sendAndWait(removeInventoryItemCommand);
